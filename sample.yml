@@ -5,8 +5,8 @@
   vars_files: vars/command.yml
   tasks:
     - name: we will be using module
-      loop: "{{lookup('ansible.builtin.dict',command)}}"
-      ansible.builtin.shell: "{{ item['value']['command'] }}"  
-      delegate_to : "{{ item['value']['dalegate_to']| default(omit) }}"
+      loop: "{{lookup('ansible.builtin.dict',command, wantlist=True)}}"
+      ansible.builtin.shell: "{{ item['value']['command'] }}"
       args:
-       "{{ item['value']['args'] }}"
+        "{{ item['value']['args'] }}"  
+      delegate_to : "{{ item['value']['dalegate_to']| default(omit) }}"
