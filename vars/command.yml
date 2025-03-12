@@ -19,7 +19,7 @@ command:
 
   com3:
    # module_name: ansible.builtin.shell
-    command: "echo \"This is for testing\ {{ selected_date }}"  
+    command: "echo \"This is for testing\" {{ selected_date }}"  
     args: 
       chdir: "/root/"
       creates: "/root/somthing.txt"     
