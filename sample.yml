@@ -4,8 +4,8 @@
   gather_facts: true
   vars_files: vars/command.yml
   tasks:
-    - name: Include a play for dates
-      ansible.builtin.import_playbook: date.yaml
+    - name: Include a tasks for dates
+      ansible.builtin.include_tasks: date.yaml
 
     - name: we will be using module
       loop: "{{lookup('ansible.builtin.dict',command, wantlist=True)}}"
