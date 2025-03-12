@@ -11,8 +11,13 @@ command:
     command: "date"
     args: 
       chdir: "/root/"
-      creates: "/root/somthing.txt"      
-      
+      creates: "/root/somthing.txt"   
+
+  com3:
+   # module_name: ansible.builtin.shell
+    command: "date"
+    dalegate_to: localhost
+     
   # com2:  
   #   name: app3
   #   version: v2
