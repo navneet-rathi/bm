@@ -19,10 +19,10 @@ command:
 
   com3:
    # module_name: ansible.builtin.shell
-    command: "|
-              echo \"this is multiline code
-              on date \"
-              date"
+    command: " 
+              echo \"this is multiline code\"
+              echo \"on date \"
+              date "
     pipe: "|"          
     args: 
       chdir: "/root/"
