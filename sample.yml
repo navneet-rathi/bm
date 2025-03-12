@@ -8,7 +8,7 @@
       loop: "{{lookup('ansible.builtin.dict',command, wantlist=True)}}"
       ansible.builtin.shell: "{{ item['value']['command'] }}"
       args: 
-        "{{ item['value']['args'] | default(omit) }}"  
+        "{{ item['value']['args'] }}"  
       delegate_to : "{{ item['value']['dalegate_to']| default(omit) }}"
       register: my_commands
 

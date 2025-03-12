@@ -1,3 +1,6 @@
+## list of mandetory params
+# 1. command
+# 2. args  
 command:
   com1:
    # module_name: ansible.builtin.shell
@@ -6,7 +9,7 @@ command:
     args: 
       chdir: "/root/"
       creates: "/root/somthing.txt"
-      
+
   com2:
    # module_name: ansible.builtin.shell
     command: "date"
@@ -16,8 +19,12 @@ command:
 
   com3:
    # module_name: ansible.builtin.shell
-    command: "date"
+    command:  "|
+      echo 'this is done'
+      echo \"on date \"
+      date"
     dalegate_to: localhost
+
      
   # com2:  
   #   name: app3
