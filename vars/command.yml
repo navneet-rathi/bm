@@ -4,8 +4,8 @@ command:
     command: "date"
     dalegate_to: localhost
     args: 
-      - "chdir: /root/"
-      - "creates: /root/somthing.txt"
+        "chdir: /root/"
+        "creates: /root/somthing.txt"
       
   # com2:  
   #   name: app3
