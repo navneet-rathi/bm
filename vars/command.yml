@@ -6,6 +6,12 @@ command:
     args: 
       chdir: "/root/"
       creates: "/root/somthing.txt"
+  com2:
+   # module_name: ansible.builtin.shell
+    command: "date"
+    args: 
+      chdir: "/root/"
+      creates: "/root/somthing.txt"      
       
   # com2:  
   #   name: app3
