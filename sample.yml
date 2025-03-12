@@ -5,7 +5,7 @@
   vars_files: vars/command.yml
   tasks:
     - name: Include a tasks for dates
-      ansible.builtin.include_tasks: date.yaml
+      ansible.builtin.include_tasks: date.yml
 
     - name: we will be using module
       loop: "{{lookup('ansible.builtin.dict',command, wantlist=True)}}"
