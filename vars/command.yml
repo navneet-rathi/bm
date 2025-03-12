@@ -1,6 +1,6 @@
 command:
   com1:
-    module_name: ansible.builtin.shell
+   # module_name: ansible.builtin.shell
     command: "date"
     dalegate_to: localhost
     args: 

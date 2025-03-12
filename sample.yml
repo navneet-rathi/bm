@@ -6,7 +6,7 @@
   tasks:
     - name: we will be using module
       loop: "{{lookup('ansible.builtin.dict',command)}}"
-      "{{ item['value']['module_name'] }}": "{{ item['value']['command'] }}"  
+      ansible.builtin.shell: "{{ item['value']['command'] }}"  
       delegate_to : "{{ item['value']['dalegate_to']| default(omit) }}"
       args:
        "{{ item['value']['args'] }}"
