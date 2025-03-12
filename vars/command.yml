@@ -20,9 +20,9 @@ command:
   com3:
    # module_name: ansible.builtin.shell
     command:  "|
-      echo 'this is done'
-      echo \"on date \"
-      date"
+          echo 'this is done'
+          echo \"on date \"
+          date"
     args: 
       chdir: "/root/"
       creates: "/root/somthing.txt"     
