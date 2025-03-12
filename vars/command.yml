@@ -23,6 +23,9 @@ command:
       echo 'this is done'
       echo \"on date \"
       date"
+    args: 
+      chdir: "/root/"
+      creates: "/root/somthing.txt"     
     dalegate_to: localhost
 
      
