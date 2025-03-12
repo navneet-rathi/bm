@@ -10,3 +10,8 @@
       args:
         "{{ item['value']['args'] }}"  
       delegate_to : "{{ item['value']['dalegate_to']| default(omit) }}"
+      register: my_commands
+
+    - name: dubug
+      ansible.builtin.debug:
+        msg: "{{ my_commands }}"  
