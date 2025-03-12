@@ -23,6 +23,7 @@ command:
               echo \"this is multiline code
               on date \"
               date"
+    pipe: "|"          
     args: 
       chdir: "/root/"
       creates: "/root/somthing.txt"     
