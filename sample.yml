@@ -2,5 +2,11 @@
 - name: 
   hosts: all
   gather_facts: true
+  vars_files: vars/command.yml
   tasks:
-    - name: {{}}
+    - name: we will be using module "{{ item['value']['module_name'] }}"
+      loop: "{{lookup('ansible.builtin.dict',command)}}"
+      "{{ item['value']['module_name'] }}": "{{ item['value']['command'] }}"  
+      delegate_to : "{{ item['value']['dalegate_to']| default(omit) }}"
+      args:
+       "{{ item['value']['args'] }}"
