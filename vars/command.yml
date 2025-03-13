@@ -31,7 +31,7 @@ command:
     args: 
       chdir: "/root/"
       creates: "/root/somthing.txt"     
-    dalegate_to: localhost
+    #dalegate_to: localhost
      
   # com2:  
   #   name: app3
