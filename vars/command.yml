@@ -32,7 +32,14 @@ command:
       chdir: "/root/"
       creates: "/root/somthing.txt"     
     #dalegate_to: localhost
-     
+
+  com5:
+   # module_name: ansible.builtin.shell
+    command: "echo \"This is for testing\" {{ selected_date }} && mkdir rahul_{{ selected_date }} "  
+    args: 
+      chdir: "/root/"
+      creates: "/root/somthing.txt"     
+    #dalegate_to: localhost     
   # com2:  
   #   name: app3
   #   version: v2
