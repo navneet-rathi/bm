@@ -3,6 +3,9 @@
   hosts: all
   gather_facts: true
   vars_files: vars/command.yml
+  #######
+  # added force handers for testing needs to be removed later
+  #####
   force_handlers: true
 
   tasks:
