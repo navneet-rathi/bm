@@ -22,18 +22,18 @@
       ##############
       # This part of code is added for testing...
       #################
-      failed_when: "'Error' in my_commands.stdout"
-      notify:
-        - Display
+      # failed_when: "'Error' in my_commands.stdout"
+      # notify:
+      #   - Display
 
     - name: Display the output of commands
       ansible.builtin.debug:
         msg: "{{ my_commands }}" 
 
-  handlers:
-    - name: Display
-      ansible.builtin.debug:
-        msg: "{{ my_commands }}"       
+  # handlers:
+  #   - name: Display
+  #     ansible.builtin.debug:
+  #       msg: "{{ my_commands }}"       
 
   # tasks:
   #   - name: Loop through items and include task block
