@@ -14,6 +14,7 @@
         "{{ item['value']['args'] }}"  
       delegate_to : "{{ item['value']['dalegate_to']| default(omit) }}"
       register: my_commands
+      failed_when: "'0' not in my_commands.rc"
 
     - name: Display the output of commands
       ansible.builtin.debug:
