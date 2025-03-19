@@ -14,7 +14,9 @@
         "{{ item['value']['args'] }}"  
       delegate_to : "{{ item['value']['dalegate_to']| default(omit) }}"
       register: my_commands
-      failed_when: "0 not in my_commands.rc"
+      failed_when: "0 not in my_commands[{{my_idx}}].rc"
+      loop_control:
+        index_var: my_idx
 
     - name: Display the output of commands
       ansible.builtin.debug:
