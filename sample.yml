@@ -8,29 +8,36 @@
   #####
   force_handlers: true
 
+  # tasks:
+  #   - name: Include a tasks for dates
+  #     ansible.builtin.include_tasks: date.yml
+
+  #   - name: we will be using module
+  #     loop: "{{lookup('ansible.builtin.dict',command, wantlist=True)}}"
+  #     ansible.builtin.shell: "{{ item['value']['pipe'] | default(\" \") }} {{ item['value']['command'] }}"
+  #     args: 
+  #       "{{ item['value']['args'] }}"  
+  #     delegate_to : "{{ item['value']['dalegate_to']| default(omit) }}"
+  #     register: my_commands
+  #     ##############
+  #     # This part of code is added for testing...
+  #     #################
+  #     failed_when: "'Error' in my_commands.stdout"
+  #     notify:
+  #       - Display
+
+  #   - name: Display the output of commands
+  #     ansible.builtin.debug:
+  #       msg: "{{ my_commands }}" 
+
+  # handlers:
+  #   - name: Display
+  #     ansible.builtin.debug:
+  #       msg: "{{ my_commands }}"       
+
   tasks:
-    - name: Include a tasks for dates
-      ansible.builtin.include_tasks: date.yml
-
-    - name: we will be using module
-      loop: "{{lookup('ansible.builtin.dict',command, wantlist=True)}}"
-      ansible.builtin.shell: "{{ item['value']['pipe'] | default(\" \") }} {{ item['value']['command'] }}"
-      args: 
-        "{{ item['value']['args'] }}"  
-      delegate_to : "{{ item['value']['dalegate_to']| default(omit) }}"
-      register: my_commands
-      ##############
-      # This part of code is added for testing...
-      #################
-      failed_when: "'Error' in my_commands.stdout"
-      notify:
-        - Display
-
-    - name: Display the output of commands
-      ansible.builtin.debug:
-        msg: "{{ my_commands }}" 
-
-  handlers:
-    - name: Display
-      ansible.builtin.debug:
-        msg: "{{ my_commands }}"       
+    - name: Loop through items and include task block
+      include_tasks: task_block.yml
+      loop: [1, 2, 3, 4]
+      loop_control:
+        loop_var: my_item

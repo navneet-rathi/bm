@@ -1,0 +1,9 @@
+- block:
+    - name: Simulate a command (fail if item is 3)
+      shell: |
+        echo "Processing {{ my_item }}"
+        if [ {{ my_item }} -eq 3 ]; then exit 1; fi
+  rescue:
+    - name: Fail the play immediately if error occurs
+      fail:
+        msg: "❌ Execution failed on item {{ my_item }}. Stopping further processing."
