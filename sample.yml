@@ -16,6 +16,9 @@
         "{{ item['value']['args'] }}"  
       delegate_to : "{{ item['value']['dalegate_to']| default(omit) }}"
       register: my_commands
+      ##############
+      # This part of code is added for testing...
+      #################
       failed_when: "'Error' in my_commands.stdout"
       notify:
         - Display
