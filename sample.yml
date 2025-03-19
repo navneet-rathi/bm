@@ -3,6 +3,8 @@
   hosts: all
   gather_facts: true
   vars_files: vars/command.yml
+  force_handlers: true
+  
   tasks:
     - name: Include a tasks for dates
       ansible.builtin.include_tasks: date.yml
@@ -15,9 +17,13 @@
       delegate_to : "{{ item['value']['dalegate_to']| default(omit) }}"
       register: my_commands
       failed_when: "'Error' in my_commands.stdout"
-#      loop_control:
-#        index_var: my_idx
+
 
     - name: Display the output of commands
       ansible.builtin.debug:
-        msg: "{{ my_commands }}"  
+        msg: "{{ my_commands }}" 
+
+  handlers:
+    - name: Display
+      ansible.builtin.debug:
+        msg: "{{ my_commands }}"       
