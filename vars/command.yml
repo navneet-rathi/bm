@@ -35,7 +35,7 @@ command:
 
   com5:
    # module_name: ansible.builtin.shell
-    command: "echo \"This is for testing\" {{ selected_date }} && mkdir rahul_{{ selected_date }} && cd /temp "  
+    command: "echo \"This is for Error testing\" {{ selected_date }} && mkdir rahul_{{ selected_date }}"  
     args: 
       chdir: "/root/"
       creates: "/root/somthing.txt"     
