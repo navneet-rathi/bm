@@ -1,22 +1,26 @@
 # restart_nginx.yml
 ---
-- hosts: all
+- name: Restarting the Nginx if port 80 is down
+  hosts: all
   gather_facts: false
+  force_handlers: true
   tasks:
     - name: Open port 80 using firewalld
       ansible.posix.firewalld:
         port: 80/tcp
         permanent: yes
         state: enabled
-
-    - name: Reload firewalld to apply changes
-      ansible.builtin.service:
-        name: firewalld
-        state: reloaded
+      notify: Reload firewalld to apply changes
 
     - name: Restart Nginx
       ansible.builtin.service:
         name: nginx
         state: restarted
       become: true
+
+  handlers:
+    - name: Reload firewalld to apply changes
+      ansible.builtin.service:
+        name: firewalld
+        state: reloaded
 
