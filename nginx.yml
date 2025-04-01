@@ -3,8 +3,20 @@
 - hosts: all
   gather_facts: false
   tasks:
+    - name: Open port 80 using firewalld
+      ansible.posix.firewalld:
+        port: 80/tcp
+        permanent: yes
+        state: enabled
+
+    - name: Reload firewalld to apply changes
+      ansible.builtin.service:
+        name: firewalld
+        state: reloaded
+
     - name: Restart Nginx
       ansible.builtin.service:
         name: nginx
         state: restarted
       become: true
+
