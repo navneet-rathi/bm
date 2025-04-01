@@ -10,5 +10,8 @@
     - name: Restart Nginx
       condition: event.url_check.status == "down"
       action:
-        run_playbook:
-          name: atix.eda.restart_nginx
+        run_job_template:
+          name: nginx_restart
+          organization: Default
+#          job_args:
+#            limit: "{{ event.meta.hosts }}"
