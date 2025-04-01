@@ -1,0 +1,14 @@
+------
+- name: Basic Check webserver
+  hosts: all
+  sources:
+    - ansible.eda.url_check:
+        urls:
+          - https://<webserver_fqdn>
+        delay: 10
+  rules:
+    - name: Restart Nginx
+      condition: event.url_check.status == "down"
+      action:
+        run_playbook:
+          name: atix.eda.restart_nginx
