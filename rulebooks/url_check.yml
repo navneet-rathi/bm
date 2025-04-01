@@ -1,4 +1,4 @@
-------
+---
 - name: Basic Check webserver
   hosts: all
   sources:
