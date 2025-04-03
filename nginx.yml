@@ -24,8 +24,8 @@
       ignore_unreachable: true
 
     - ansible.builtin.debug:
-        var: {{ nginx_restart }}
-        
+        msg: "{{ nginx_restart }}"
+
     - name: Genrate Email content to Send in Email
       ansible.builtin.template:
         src: email_alert.html.j2
