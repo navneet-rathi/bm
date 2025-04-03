@@ -6,47 +6,48 @@
   force_handlers: true
   ignore_unreachable: true 
   tasks:
-    - name: Try to ping the host
-      block:
-        - name: Ping the host
-          ansible.builtin.ping:
 
-        - name: Ping is success
-          ansible.builtin.debug:
-            msg: "{{inventory_hostname}} is reachanble from Ansible Controller...!"            
-      rescue:
-          - name: Genrate Email content to Send in Email | Server is unreachable
-            ansible.builtin.template:
-              src: email_alert.html.j2
-              dest: /tmp/alert_email.html
-            run_once: true  
-            delegate_to: 127.0.0.1
-            when: nginx_restart.changed != 'true'
+    - name: Ping the host
+      ansible.builtin.ping:
+      ignore_unreachable: yes
+      register: ping_result
 
-          - name: Email Alert if fail server is unreachable
-            when: nginx_restart.changed != 'true'
-            mail:
-              host: smtp.gmail.com
-              port: 587
-              subtype: html
-              to:
-              - "nrathi@redhat.com"
-              subject: "Alert: Host not reachable on SSH {{ inventory_hostname }}"
-              body: "{{ lookup('file', '/tmp/alert_email.html') }}"
-              username: "dmeonavneet@gmail.com"
-              password: "rbfqhoincpyouxqk"
-            run_once: true  
-            delegate_to: 127.0.0.1
-            changed_when: True   
+    - name: Ping is success
+      ansible.builtin.debug:
+        msg: "{{inventory_hostname}} is reachanble from Ansible Controller...!"
+      when: ping_result.unreachable is defined
+
+    - name: Genrate Email content to Send in Email | Server is unreachable
+      ansible.builtin.template:
+        src: email_alert.html.j2
+        dest: /tmp/alert_email.html
+      run_once: true  
+      delegate_to: 127.0.0.1
+      when: ping_result.unreachable is defined
+
+    - name: Email Alert if fail server is unreachable
+      when: ping_result.unreachable is defined
+      mail:
+        host: smtp.gmail.com
+        port: 587
+        subtype: html
+        to:
+        - "nrathi@redhat.com"
+        subject: "Alert: Host not reachable on SSH {{ inventory_hostname }}"
+        body: "{{ lookup('file', '/tmp/alert_email.html') }}"
+        username: "dmeonavneet@gmail.com"
+        password: "rbfqhoincpyouxqk"
+      run_once: true  
+      delegate_to: 127.0.0.1
+      changed_when: True   
 
     - name: Firewalld |Open port 80 using firewalld
-      #ignore_errors: true
-      #ignore_unreachable: true
       ansible.posix.firewalld:
         port: 80/tcp
         permanent: yes
         state: enabled
       notify: Reload firewalld to apply changes
+      when: ping_result.unreachable is not defined
 
     - name: Make sure service is up and running | Nginx service
       ansible.builtin.service:
@@ -54,14 +55,36 @@
         state: started
       become: true
       register: nginx_restart
-      #ignore_errors: true
-      #ignore_unreachable: true
+      when: ping_result.unreachable is not defined
 
     - ansible.builtin.debug:
         msg: "{{ nginx_restart }}"
- 
+      when: ping_result.unreachable is not defined
+
   handlers:
     - name: Reload firewalld | To apply changes
       ansible.builtin.service:
         name: firewalld
         state: reloaded
+        
+###################
+#Added this for testing
+###################
+# ---
+# - name: Handle unreachable hosts manually
+#   hosts: all
+#   gather_facts: no
+#   tasks:
+#     - name: Attempt to ping the host
+#       ansible.builtin.ping:
+#       ignore_unreachable: yes
+#       register: ping_result
+
+#     - name: Check if host was unreachable
+#       ansible.builtin.debug:
+#         msg: "Host {{ inventory_hostname }} is unreachable."
+#       when: ping_result.unreachable is defined
+
+#     - name: Perform an operation if ping is successful
+#       ansible.builtin.shell: echo "Host is reachable {{ inventory_hostname }}"
+#       when: ping_result.unreachable is not defined
