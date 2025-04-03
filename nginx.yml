@@ -6,7 +6,6 @@
   force_handlers: true
   ignore_unreachable: true 
   tasks:
-
     - name: Ping the host
       ansible.builtin.ping:
       ignore_unreachable: yes
