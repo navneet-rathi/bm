@@ -50,7 +50,7 @@
     - name: Restart Nginx
       ansible.builtin.service:
         name: nginx
-        state: restarted
+        state: started
       become: true
       register: nginx_restart
       #ignore_errors: true
