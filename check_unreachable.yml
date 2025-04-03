@@ -1,0 +1,58 @@
+---
+- name: Handle unreachable hosts manually
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Attempt to ping the host
+      ansible.builtin.ping:
+      ignore_unreachable: yes
+      register: ping_result
+
+    - name: Check if host was unreachable
+      ansible.builtin.debug:
+        msg: "Host {{ inventory_hostname }} is unreachable."
+      when: ping_result.unreachable is defined
+
+    - name: Perform an operation if ping is successful
+      ansible.builtin.shell: echo "Host is reachable {{ inventory_hostname }}"
+      when: ping_result.unreachable is not defined
+
+    - name: remove the exesting file
+      ansible.builtin.file:
+        path: /tmp/unreachable_hosts.txt
+        state: absent
+      delegate_to: localhost
+
+    - name: Create a new file
+      ansible.builtin.file:
+        path: /tmp/unreachable_hosts.txt
+        state: touch
+      delegate_to: localhost
+      run_once: true
+
+    - name: Append unreachable host to file
+      ansible.builtin.lineinfile:
+        path: /tmp/unreachable_hosts.txt
+        line: "{{ inventory_hostname }}"
+          #create: yes
+      when: ping_result.unreachable is defined
+      delegate_to: localhost
+          
+- name: Send email with unreachable hosts
+  hosts: localhost
+  tasks:
+    - name: Check that the somefile.conf exists
+      stat: 
+        path: /tmp/unreachable_hosts.txt
+      register: stat_result
+    
+    - name: Read the list of unreachable hosts
+      ansible.builtin.shell: cat /tmp/unreachable_hosts.txt
+      register: unreachable_hosts
+      when: stat_result.stat.exists  
+    
+    - name: adding debug
+      ansible.builtin.debug:
+        msg: "{{item }}"
+      loop: "{{ unreachable_hosts.stdout |split('\n') }}"
+      when:  stat_result.stat.exists

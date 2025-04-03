@@ -15,6 +15,39 @@
         msg: "{{inventory_hostname}} is not from Ansible Controller...!"
       when: ping_result.unreachable is defined
 
+    - name: Add unreachable hosts to a list
+      ansible.builtin.set_fact:
+        unreachable_hosts: "{{ unreachable_hosts | default([]) + [inventory_hostname] }}"
+      when: ping_result.unreachable is defined
+
+    - name: Firewalld |Open port 80 using firewalld
+      ansible.posix.firewalld:
+        port: 80/tcp
+        permanent: yes
+        state: enabled
+      notify: Reload firewalld to apply changes
+      when: ping_result.unreachable is not defined
+
+    - name: Make sure service is up and running | Nginx service
+      ansible.builtin.service:
+        name: nginx
+        state: started
+      become: true
+      register: nginx_restart
+      when: ping_result.unreachable is not defined
+
+###### Commented debug as its only for testing
+    #- ansible.builtin.debug:
+    #    msg: "{{ nginx_restart }}"
+    #  when: ping_result.unreachable is not defined
+
+  handlers:
+    - name: Reload firewalld | To apply changes
+      ansible.builtin.service:
+        name: firewalld
+        state: reloaded
+
+ ############ ###################    
     - name: Genrate Email content to Send in Email | Server is unreachable
       ansible.builtin.template:
         src: email_alert.html.j2
@@ -39,32 +72,7 @@
       delegate_to: 127.0.0.1
       changed_when: True   
 
-    - name: Firewalld |Open port 80 using firewalld
-      ansible.posix.firewalld:
-        port: 80/tcp
-        permanent: yes
-        state: enabled
-      notify: Reload firewalld to apply changes
-      when: ping_result.unreachable is not defined
 
-    - name: Make sure service is up and running | Nginx service
-      ansible.builtin.service:
-        name: nginx
-        state: started
-      become: true
-      register: nginx_restart
-      when: ping_result.unreachable is not defined
-      
-###### Commented debug as its only for testing
-    #- ansible.builtin.debug:
-    #    msg: "{{ nginx_restart }}"
-    #  when: ping_result.unreachable is not defined
-
-  handlers:
-    - name: Reload firewalld | To apply changes
-      ansible.builtin.service:
-        name: firewalld
-        state: reloaded
 
 ###################
 #Added this for testing
