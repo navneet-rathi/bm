@@ -4,6 +4,7 @@
   hosts: all
   gather_facts: false
   force_handlers: true
+  ignore_unreachable: true 
   tasks:
     - name: Try to ping the host
       block:
