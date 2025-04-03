@@ -14,7 +14,7 @@
           ansible.builtin.debug:
             msg: "{{inventory_hostname}} is reachanble from Ansible Controller...!"            
       rescue:
-          - name: Genrate Email content to Send in Email
+          - name: Genrate Email content to Send in Email | Server is unreachable
             ansible.builtin.template:
               src: email_alert.html.j2
               dest: /tmp/alert_email.html
@@ -22,7 +22,7 @@
             delegate_to: 127.0.0.1
             when: nginx_restart.changed != 'true'
 
-          - name: Email Alert if fail to restart nginx
+          - name: Email Alert if fail server is unreachable
             when: nginx_restart.changed != 'true'
             mail:
               host: smtp.gmail.com
@@ -38,7 +38,7 @@
             delegate_to: 127.0.0.1
             changed_when: True   
 
-    - name: Open port 80 using firewalld
+    - name: Firewalld |Open port 80 using firewalld
       #ignore_errors: true
       #ignore_unreachable: true
       ansible.posix.firewalld:
@@ -47,7 +47,7 @@
         state: enabled
       notify: Reload firewalld to apply changes
 
-    - name: Restart Nginx
+    - name: Make sure service is up and running | Nginx service
       ansible.builtin.service:
         name: nginx
         state: started
@@ -60,7 +60,7 @@
         msg: "{{ nginx_restart }}"
  
   handlers:
-    - name: Reload firewalld to apply changes
+    - name: Reload firewalld | To apply changes
       ansible.builtin.service:
         name: firewalld
         state: reloaded
