@@ -12,9 +12,9 @@
       ignore_unreachable: yes
       register: ping_result
 
-    - name: Ping is success
+    - name: Ping is not successful
       ansible.builtin.debug:
-        msg: "{{inventory_hostname}} is reachanble from Ansible Controller...!"
+        msg: "{{inventory_hostname}} is not from Ansible Controller...!"
       when: ping_result.unreachable is defined
 
     - name: Genrate Email content to Send in Email | Server is unreachable
@@ -66,7 +66,7 @@
       ansible.builtin.service:
         name: firewalld
         state: reloaded
-        
+
 ###################
 #Added this for testing
 ###################
