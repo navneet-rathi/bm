@@ -9,7 +9,7 @@
       block:
         - name: Open port 80 using firewalld
           #ignore_errors: true
-          ignore_unreachable: true
+          #ignore_unreachable: true
           ansible.posix.firewalld:
             port: 80/tcp
             permanent: yes
@@ -23,7 +23,7 @@
           become: true
           register: nginx_restart
           #ignore_errors: true
-          ignore_unreachable: true
+          #ignore_unreachable: true
 
         - ansible.builtin.debug:
             msg: "{{ nginx_restart }}"
