@@ -8,8 +8,11 @@
     - name: Try to ping the host
       block:
         - name: Ping the host
-          ansible.builtin.ping:   
-                    
+          ansible.builtin.ping:
+
+        - name: Ping is success
+          ansible.builtin.debug:
+            msg: "{{inventory_hostname}} is reachanble from Ansible Controller...!"            
       rescue:
           - name: Genrate Email content to Send in Email
             ansible.builtin.template:
