@@ -54,10 +54,11 @@
       become: true
       register: nginx_restart
       when: ping_result.unreachable is not defined
-
-    - ansible.builtin.debug:
-        msg: "{{ nginx_restart }}"
-      when: ping_result.unreachable is not defined
+      
+###### Commented debug as its only for testing
+    #- ansible.builtin.debug:
+    #    msg: "{{ nginx_restart }}"
+    #  when: ping_result.unreachable is not defined
 
   handlers:
     - name: Reload firewalld | To apply changes
