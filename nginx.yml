@@ -6,7 +6,8 @@
   force_handlers: true
   tasks:
     - name: Open port 80 using firewalld
-      ignore_errors: true
+      #ignore_errors: true
+      ignore_unreachable: true
       ansible.posix.firewalld:
         port: 80/tcp
         permanent: yes
@@ -19,7 +20,8 @@
         state: restarted
       become: true
       register: nginx_restart
-      ignore_errors: true
+      #ignore_errors: true
+      ignore_unreachable: true
 
     - name: Genrate Email content to Send in Email
       ansible.builtin.template:
