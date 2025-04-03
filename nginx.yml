@@ -6,6 +6,7 @@
   force_handlers: true
   tasks:
     - name: Open port 80 using firewalld
+      ignore_errors: true
       ansible.posix.firewalld:
         port: 80/tcp
         permanent: yes
@@ -17,6 +18,31 @@
         name: nginx
         state: restarted
       become: true
+      register: nginx_restart
+      ignore_errors: true
+
+    - name: Genrate Email content to Send in Email
+      ansible.builtin.template:
+        src: email_alert.html.j2
+        dest: /tmp/alert_email.html
+      run_once: true  
+      delegate_to: 127.0.0.1
+
+    - name: Email Alert if fail to restart nginx
+      when: nginx_restart.changed 
+      mail:
+        host: smtp.gmail.com
+        port: 587
+        subtype: html
+        to:
+        - "nrathi@redhat.com"
+        subject: "Alert: Host not reachable on SSH {{ inventory_hostname }}"
+        body: "{{ lookup('file', '/tmp/alert_email.html') }}"
+        username: "dmeonavneet@gmail.com"
+        password: "rbfqhoincpyouxqk"
+      run_once: true  
+      delegate_to: 127.0.0.1
+      changed_when: True    
 
   handlers:
     - name: Reload firewalld to apply changes
