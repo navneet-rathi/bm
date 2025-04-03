@@ -32,10 +32,10 @@
         dest: /tmp/alert_email.html
       run_once: true  
       delegate_to: 127.0.0.1
-      when: nginx_restart.changed == "false"
+      when: nginx_restart.changed != 'true'
 
     - name: Email Alert if fail to restart nginx
-      when: nginx_restart.changed == "false"
+      when: nginx_restart.changed != 'true'
       mail:
         host: smtp.gmail.com
         port: 587
