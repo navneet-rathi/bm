@@ -8,7 +8,6 @@
   tasks:
     - name: Ping the host
       ansible.builtin.ping:
-      ignore_unreachable: yes
       register: ping_result
 
     - name: Ping is not successful
