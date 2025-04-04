@@ -40,14 +40,6 @@
     #- ansible.builtin.debug:
     #    msg: "{{ nginx_restart }}"
     #  when: ping_result.unreachable is not defined
-
-  handlers:
-    - name: Reload firewalld | To apply changes
-      ansible.builtin.service:
-        name: firewalld
-        state: reloaded
-
- ############ ###################    
     - name: Genrate Email content to Send in Email | Server is unreachable
       ansible.builtin.template:
         src: email_alert.html.j2
@@ -71,6 +63,15 @@
       run_once: true  
       delegate_to: 127.0.0.1
       changed_when: True   
+      
+  handlers:
+    - name: Reload firewalld | To apply changes
+      ansible.builtin.service:
+        name: firewalld
+        state: reloaded
+
+ ############ ###################    
+
 
 
 
