@@ -9,7 +9,7 @@
 
 - name: Format the date
   set_fact:
-    currentdate_: "{{ '%d-%m-%Y' | strftime(ansible_date_time.epoch) }}"
+    currentdate_: "{{ '%d_%m_%Y' | strftime(ansible_date_time.epoch) }}"
     currentdate_hypen: "{{ '%d-%m-%Y' | strftime(ansible_date_time.epoch) }}"
     currentdate_fullmonth: "{{ '%d-%B-%Y' | strftime(ansible_date_time.epoch) }}"
     currentdate_shortmonth: "{{ '%d-%B-%Y' | strftime(ansible_date_time.epoch) }}"
