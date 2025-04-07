@@ -4,8 +4,8 @@
   sources:
     - ansible.eda.url_check:
         urls:
-          - http://192.168.1.23
-        delay: 30
+          - http://192.168.64.43
+        delay: 45
   rules:
     - name: Restart Nginx
       condition: event.url_check.status == "down"
@@ -15,3 +15,9 @@
           organization: Default
 #          job_args:
 #            limit: "{{ event.meta.hosts }}"
+
+    - name: Nginx up
+      condition: event.url_check.status != "down"
+      action:      
+        debug:
+          msg: "Nginx is up and runing..!"
