@@ -1,0 +1,23 @@
+---
+- name: livemigration vm
+  hosts: all
+  gather_facts: false
+  collections:
+    - redhat.openshift
+  vars:
+    namespace: kubevirt        # or your VM's namespace
+    vmi_name: testvm1           # name of the VM to migrate
+  tasks:
+    - name: Trigger live migration for the VMI
+      redhat.openshift.k8s:
+        state: present
+        namespace: "{{ namespace }}"
+        definition:
+          apiVersion: kubevirt.io/v1
+          kind: VirtualMachineInstanceMigration
+          metadata:
+            generateName: "{{ vmi_name }}-migrationjob"
+            namespace: "{{ namespace }}"
+          spec:
+            vmiName: "{{ vmi_name }}"    
+      
