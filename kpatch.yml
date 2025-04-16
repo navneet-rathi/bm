@@ -1,0 +1,41 @@
+---
+- name: Automated Kernel Live Patching on RHEL
+  hosts: all
+  become: yes
+  gather_facts: yes
+
+  tasks:
+
+    - name: Ensure kpatch is installed
+      ansible.builtin.dnf:
+        name: kpatch
+        state: present
+
+    - name: Get available kernel live patches
+      ansible.builtin.shell: |
+        dnf updateinfo list all | grep -i kpatch || true
+      register: kpatch_list
+      changed_when: false
+
+    - name: Debug available live patches
+      ansible.builtin.debug:
+        msg: "{{ kpatch_list.stdout_lines }}"
+
+    - name: Extract patch package names
+      ansible.builtin.set_fact:
+        patch_packages: "{{ kpatch_list.stdout_lines | map('split') | map('last') | list }}"
+
+    - name: Install available kpatch updates (if any)
+      ansible.builtin.dnf:
+        name: "{{ patch_packages }}"
+        state: present
+      when: patch_packages | length > 0
+
+    - name: Verify loaded kpatch modules
+      ansible.builtin.command: kpatch list
+      register: applied_patches
+      changed_when: false
+
+    - name: Show applied kpatch modules
+      ansible.builtin.debug:
+        msg: "{{ applied_patches.stdout_lines }}"
