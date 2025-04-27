@@ -38,6 +38,11 @@
       debug:
         msg: "Current Memory usage: {{ memory_usage.stdout | float | round(2) }}%"
 
+
+    - name: Monitor
+      ansible.builtin.debug:
+        msg: disk_usage.stdout_lines | select("search", "^[8-9][0-9]%") | list 
+        
     - name: Check if Disk Usage Exceeds Threshold
       fail:
         msg: "Disk usage is above {{ disk_threshold_percent }}% on {{ inventory_hostname }}!"
