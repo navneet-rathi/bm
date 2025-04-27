@@ -45,7 +45,7 @@
 
     - name: Check if Disk Usage Exceeds Threshold
       fail:
-        msg: "Disk usage is above {{ disk_threshold_percent }}% on {{ inventory_hostname }}!"
+        msg: "Disk usage is above {{ disk_threshold_percent }}% on {{ inventory_hostname }}! details {{ disk_usage.stdout_lines | select('search','[8-9][0-9]+') }}"
       when: >
         disk_usage.stdout_lines | select("search", "[8-9][0-9]+") | list | count > 0
 
