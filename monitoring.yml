@@ -1,0 +1,55 @@
+---
+- name: Monitor Disk, CPU, and Memory on Linux servers
+  hosts: all
+  gather_facts: yes
+  become: yes
+
+  vars:
+    disk_threshold_percent: 80
+    cpu_threshold_percent: 85
+    memory_threshold_percent: 80
+
+  tasks:
+
+    - name: Check Disk Usage
+      shell: "df -h --output=pcent,target | tail -n +2"
+      register: disk_usage
+      changed_when: false
+
+    - name: Check CPU Usage
+      shell: "top -bn1 | grep 'Cpu(s)' | awk '{print 100 - $8}'"
+      register: cpu_usage
+      changed_when: false
+
+    - name: Check Memory Usage
+      shell: "free | awk '/Mem:/ {print ($3/$2)*100.0}'"
+      register: memory_usage
+      changed_when: false
+
+    - name: Show Disk Usage
+      debug:
+        msg: "{{ disk_usage.stdout_lines }}"
+
+    - name: Show CPU Usage
+      debug:
+        msg: "Current CPU usage: {{ cpu_usage.stdout | float | round(2) }}%"
+
+    - name: Show Memory Usage
+      debug:
+        msg: "Current Memory usage: {{ memory_usage.stdout | float | round(2) }}%"
+
+    - name: Check if Disk Usage Exceeds Threshold
+      fail:
+        msg: "Disk usage is above {{ disk_threshold_percent }}% on {{ inventory_hostname }}!"
+      when: >
+        disk_usage.stdout_lines | select("search", "^[8-9][0-9]%") | list | count > 0
+
+    - name: Check if CPU Usage Exceeds Threshold
+      fail:
+        msg: "CPU usage ({{ cpu_usage.stdout | float | round(2) }}%) is above {{ cpu_threshold_percent }}% on {{ inventory_hostname }}!"
+      when: (cpu_usage.stdout | float) > cpu_threshold_percent
+
+    - name: Check if Memory Usage Exceeds Threshold
+      fail:
+        msg: "Memory usage ({{ memory_usage.stdout | float | round(2) }}%) is above {{ memory_threshold_percent }}% on {{ inventory_hostname }}!"
+      when: (memory_usage.stdout | float) > memory_threshold_percent
