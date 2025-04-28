@@ -10,7 +10,6 @@
     memory_threshold_percent: 80
 
   tasks:
-
     - name: Check Disk Usage
       shell: "df -h --output=pcent,target | tail -n +2"
       register: disk_usage
