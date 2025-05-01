@@ -19,6 +19,12 @@
       ansible.builtin.set_fact:
         unreachable_hosts: "{{ unreachable_hosts | default([]) + [inventory_hostname] }}"
       when: ping_result.unreachable is defined
+   
+    - name: Install nginx on remote machine
+      ansible.builtin.dnf:
+        name: nginx
+        state: installed 
+      when: ping_result.unreachable is not defined
 
     - name: Firewalld |Open port 80 using firewalld
       ansible.posix.firewalld:
@@ -34,12 +40,10 @@
         state: started
       become: true
       register: nginx_restart
-      when: ping_result.unreachable is not defined
+      when: 
+        - ping_result.unreachable is not defined
+      ignore_errors : true   
 
-###### Commented debug as its only for testing
-    #- ansible.builtin.debug:
-    #    msg: "{{ nginx_restart }}"
-    #  when: ping_result.unreachable is not defined
     - name: Genrate Email content to Send in Email | Server is unreachable
       ansible.builtin.template:
         src: email_alert.html.j2
@@ -69,30 +73,3 @@
       ansible.builtin.service:
         name: firewalld
         state: reloaded
-
- ############ ###################    
-
-
-
-
-###################
-#Added this for testing
-###################
-# ---
-# - name: Handle unreachable hosts manually
-#   hosts: all
-#   gather_facts: no
-#   tasks:
-#     - name: Attempt to ping the host
-#       ansible.builtin.ping:
-#       ignore_unreachable: yes
-#       register: ping_result
-
-#     - name: Check if host was unreachable
-#       ansible.builtin.debug:
-#         msg: "Host {{ inventory_hostname }} is unreachable."
-#       when: ping_result.unreachable is defined
-
-#     - name: Perform an operation if ping is successful
-#       ansible.builtin.shell: echo "Host is reachable {{ inventory_hostname }}"
-#       when: ping_result.unreachable is not defined
