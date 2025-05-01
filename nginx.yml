@@ -25,7 +25,7 @@
         port: 80/tcp
         permanent: yes
         state: enabled
-      notify: Reload firewalld to apply changes
+      notify: Reload firewalld | To apply changes
       when: ping_result.unreachable is not defined
 
     - name: Make sure service is up and running | Nginx service
