@@ -2,6 +2,7 @@
 - name: 
   hosts: all
   gather_facts: true
+  become:  true
   vars_files: vars/command.yml
   
   tasks:
