@@ -47,38 +47,58 @@
 <body>
     <p>Dear Team,</p>
     <p>This is an automated alert to inform you:</p>
+
     <table>
+
       <tr>
+
         <th>Host</th>
         <th>OS Version</th>
-        <th>Kernel Version</th>       
+        <th>Kernel Version</th>    
+
       </tr>
+
       {% for server in infodata.list %}
       <tr>
+
         <td><a href="#host-{{ server.host }}">{{ server.host }}</td> 
         <td>{{ server.os_release }}</td>
         <td>{{ server.kernel_release }}</td>
+
       {% endfor %} 
+
       </tr>
+      
     </table>
    {% for server in infodata.list %}
-     <h2 id="host-{{ server.host }}">{{ server.host }} - Package Info</h2>
+   
+  <h2 id="host-{{ server.host }}">{{ server.host }} - Package Info</h2>
+   
    {{ server.host }} Package infodata
 
     <table>
+    
       <tr>
+    
         <th>Package</th>
         <th>Version</th>
         <th>Release</th>       
+    
       </tr>
+    
       {% for pkg in rpminfodata.list %}
+    
       <tr>
         <td>{{ pkg.Package }}</td> 
         <td>{{ pkg.Version }}</td>
         <td>{{ pkg.Release }}</td>
+    
       {% endfor %} 
+    
       </tr>
+    
     </table>
+
  {% endfor %} 
 
     <p>Best regards,<br/>{{ awx_user_email }}</p>
