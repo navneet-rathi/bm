@@ -3,7 +3,6 @@
   hosts: all
   gather_facts: yes
   become: true
-
   tasks:
     - name: Get OS release info
       shell: cat /etc/os-release
@@ -19,7 +18,6 @@
       package_facts:
         manager: auto
 
-
     - name: display
       ansible.builtin.debug:
         msg: >
@@ -31,12 +29,11 @@
       loop_control:
         label: "{{ item.1.name }}-{{ item.1.version }}"
 
-
     - name: Genrate Email content to Send in Email
       ansible.builtin.template:
         src: packages_email_alert_html.j2
         dest: /tmp/alert_email.html
-
+      delegate_to: localhost  
 
     - name: Send email Alert
       community.general.mail:
@@ -45,9 +42,10 @@
         subtype: html
         to:
         - "nrathi@redhat.com"
-        subject: "Alert: Password Password Expires in next 7 days"
+        subject: "Alert: server Details"
         body: "{{ lookup('file', '/tmp/alert_email.html') }}"
         username: "dmeonavneet@gmail.com"
         password: "rbfqhoincpyouxqk"
       changed_when: True
+      delegate_to: localhost
         
