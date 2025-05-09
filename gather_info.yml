@@ -41,6 +41,23 @@
         src: "/tmp/info.csv"
         dest: "/tmp/info/versiondata-{{ inventory_hostname }}.csv"
         flat: yes
+   
+    - name: Remove old  data files
+      ansible.builtin.file:
+        path: /tmp/rpminfo.csv
+        state: absent   
+
+    - name: Genrate Software(RPM)|Binary data file on {{inventory_hostname}}
+      ansible.builtin.shell:  "echo {{ item.1.name }}, {{ item.1.version }}, {{ item.1.release }} >>/tmp/rpminfo.csv"
+      loop: "{{ ansible_facts.packages | dict2items | subelements('value') }}"
+      loop_control:
+        label: "{{ item.1.name }}-{{ item.1.version }}"
+
+    - name: Fetch the files from remote server 
+      ansible.builtin.fetch:
+        src: "/tmp/rpminfo.csv"
+        dest: "/tmp/rpminfo/versiondata-{{ inventory_hostname }}.csv"
+        flat: yes        
 
 - hosts: localhost
   connection: local
@@ -61,6 +78,24 @@
         fieldnames: host,os_release,kernel_release
         delimiter: ','
       register: infodata
+
+    - name: Remove old versio data files
+      ansible.builtin.file:
+        path: /tmp/rpminfo.csv
+        state: absent   
+
+    - name: Assemble from fragments from a directory
+      ansible.builtin.assemble:
+        src: /tmp/rpminfo
+        dest: /tmp/rpminfo.csv
+          
+    - name: Read os details from CSV file and return a list
+      community.general.read_csv:
+        path: /tmp/rpminfo.csv
+        fieldnames: Package,Version,Release
+        delimiter: ','
+      register: rpminfodata
+
 
     - name: Genrate Email content to Send in Email
       ansible.builtin.template:

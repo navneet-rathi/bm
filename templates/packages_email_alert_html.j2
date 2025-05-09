@@ -53,14 +53,33 @@
         <th>OS Version</th>
         <th>Kernel Version</th>       
       </tr>
-   {% for server in infodata.list %}
+      {% for server in infodata.list %}
       <tr>
         <td>{{ server.host }}</td> 
         <td>{{ server.os_release }}</td>
         <td>{{ server.kernel_release }}</td>
- {% endfor %} 
+      {% endfor %} 
       </tr>
     </table>
+   {% for server in infodata.list %}
+   {{ server.host }} Package infodata
+
+    <table>
+      <tr>
+        <th>Package</th>
+        <th>Version</th>
+        <th>Release</th>       
+      </tr>
+      {% for pkg in rpminfodata.list %}
+      <tr>
+        <td>{{ pkg.Package }}</td> 
+        <td>{{ pkg.Version }}</td>
+        <td>{{ pkg.Release }}</td>
+      {% endfor %} 
+      </tr>
+    </table>
+ {% endfor %} 
+
     <p>Best regards,<br/>{{ awx_user_email }}</p>
 </body>
 </html>
