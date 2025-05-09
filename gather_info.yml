@@ -31,14 +31,24 @@
       loop: "{{ ansible_facts.packages | dict2items | subelements('value') }}"
       loop_control:
         label: "{{ item.1.name }}-{{ item.1.version }}"
-    # - name: Save report to file (JSON)
-    #   copy:
-    #     content: |
-    #       {
-    #         "host": "{{ inventory_hostname }}",
-    #         "os": "{{ os_release.stdout_lines }}",
-    #         "kernel": "{{ kernel_version.stdout }}",
-    #         "installed_packages": {{ ansible_facts.packages | to_nice_json }}
-    #       }
-    #     dest: "/tmp/{{ inventory_hostname }}_package_report.json"
-    #   delegate_to: localhost
+
+
+    - name: Genrate Email content to Send in Email
+      ansible.builtin.template:
+        src: packages_email_alert_html.j2
+        dest: /tmp/alert_email.html
+      when: email
+
+    - name: Send email Alert
+      community.general.mail:
+        host: smtp.gmail.com
+        port: 587
+        subtype: html
+        to:
+        - "nrathi@redhat.com"
+        subject: "Alert: Password Password Expires in next 7 days"
+        body: "{{ lookup('file', '/tmp/alert_email.html') }}"
+        username: "dmeonavneet@gmail.com"
+        password: "rbfqhoincpyouxqk"
+      changed_when: True
+      when: email      
