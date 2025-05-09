@@ -36,7 +36,7 @@
       ansible.builtin.template:
         src: packages_email_alert_html.j2
         dest: /tmp/alert_email.html
-      when: email
+
 
     - name: Send email Alert
       community.general.mail:
@@ -50,4 +50,4 @@
         username: "dmeonavneet@gmail.com"
         password: "rbfqhoincpyouxqk"
       changed_when: True
-      when: email      
+        
