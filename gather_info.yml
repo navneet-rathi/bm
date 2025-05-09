@@ -23,8 +23,12 @@
 
     - name: display
       ansible.builtin.debug:
-        msg: "{{ item }}"        
-      loop: "{{ ansible_facts.packages[].['name'] }}"
+        msg: >
+              Package: {{ item.0 }}
+              Version: {{ item.1.version }}
+              Release: {{ item.1.release }}
+              Arch: {{ item.1.arch }}
+      loop: "{{ ansible_facts.packages | dict2items | subelements('value') }}"
     # - name: Save report to file (JSON)
     #   copy:
     #     content: |
