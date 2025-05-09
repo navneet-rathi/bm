@@ -24,7 +24,7 @@
     - name: display
       ansible.builtin.debug:
         msg: >
-              Package: {{ item.0 }}
+              Package: {{ item.1.name }}
               Version: {{ item.1.version }}
               Release: {{ item.1.release }}
               Arch: {{ item.1.arch }}
