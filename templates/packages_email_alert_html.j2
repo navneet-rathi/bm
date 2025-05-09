@@ -61,7 +61,7 @@
     <p>Dear Team,</p>
 
     <p>This is an automated alert to inform you:</p>
-    <p>Below are the details of password expirey </p>
+   {# <p>Below are the details of password expirey </p> #}
 
     <table>
       <tr>
@@ -69,16 +69,14 @@
         <th>OS Version</th>
         <th>Kernel Version</th>       
       </tr>
-  <!-- 
-  {# 
-  # {% for user in passdata.list %}
-  #} 
-  -->
+ 
+   {% for server in infodata.list %}
+
       <tr>
-        <td>{{ inventory_hostname }}</td> 
-        <td>{{ os_release.stdout }}</td>
-        <td>{{ kernel_version.stdout }}</td>
-  <!-- {#  {% endfor %} #} -->
+        <td>{{ server.host }}</td> 
+        <td>{{ server.os_release }}</td>
+        <td>{{ server.kernel_release }}</td>
+ {% endfor %} 
       </tr>
     </table>
     <p>Best regards,<br/>{{ awx_user_email }}</p>
@@ -86,3 +84,5 @@
 </body>
 
 </html>
+
+host,os_release,

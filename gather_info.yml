@@ -18,34 +18,64 @@
       package_facts:
         manager: auto
 
-    - name: display
-      ansible.builtin.debug:
-        msg: >
-              Package: {{ item.1.name }}
-              Version: {{ item.1.version }}
-              Release: {{ item.1.release }}
-              Arch: {{ item.1.arch }}
-      loop: "{{ ansible_facts.packages | dict2items | subelements('value') }}"
-      loop_control:
-        label: "{{ item.1.name }}-{{ item.1.version }}"
+    # - name: display
+    #   ansible.builtin.debug:
+    #     msg: >
+    #           Package: {{ item.1.name }}
+    #           Version: {{ item.1.version }}
+    #           Release: {{ item.1.release }}
+    #           Arch: {{ item.1.arch }}
+    #   loop: "{{ ansible_facts.packages | dict2items | subelements('value') }}"
+    #   loop_control:
+    #     label: "{{ item.1.name }}-{{ item.1.version }}"
 
-    - name: Genrate Email content to Send in Email
-      ansible.builtin.template:
-        src: packages_email_alert_html.j2
-        dest: /tmp/alert_email.html
-      delegate_to: localhost  
+    # - name: Genrate Email content to Send in Email
+    #   ansible.builtin.template:
+    #     src: packages_email_alert_html.j2
+    #     dest: /tmp/alert_email.html
+    #   delegate_to: localhost  
 
-    - name: Send email Alert
-      community.general.mail:
-        host: smtp.gmail.com
-        port: 587
-        subtype: html
-        to:
-        - "nrathi@redhat.com"
-        subject: "Alert: server Details"
-        body: "{{ lookup('file', '/tmp/alert_email.html') }}"
-        username: "dmeonavneet@gmail.com"
-        password: "rbfqhoincpyouxqk"
-      changed_when: True
-      delegate_to: localhost
-        
+    # - name: Send email Alert
+    #   community.general.mail:
+    #     host: smtp.gmail.com
+    #     port: 587
+    #     subtype: html
+    #     to:
+    #     - "nrathi@redhat.com"
+    #     subject: "Alert: server Details"
+    #     body: "{{ lookup('file', '/tmp/alert_email.html') }}"
+    #     username: "dmeonavneet@gmail.com"
+    #     password: "rbfqhoincpyouxqk"
+    #   changed_when: True
+    #   delegate_to: localhost
+    - name: Genrate Versiondate file on {{inventory_hostname}}
+      ansible.builtin.copy:
+          dest: "/tmp/info.csv"
+          content: |
+            {{ inventory_hostname }}, {{ os_release.stdout  }}, {{ kernel_version.stdout }}
+
+    - name: Fetch the files from remote server 
+      ansible.builtin.fetch:
+        src: "/tmp/info.csv"
+        dest: "/tmp/info/versiondata-{{ inventory_hostname }}.csv"
+        flat: yes
+
+- hosts: localhost
+  connection: local
+  tasks:      
+    - name: Remove old versiob data files
+      ansible.builtin.file:
+        path: /tmp/info.csv
+        state: absent   
+
+    - name: Assemble from fragments from a directory
+      ansible.builtin.assemble:
+        src: /tmp/info
+        dest: /tmp/info.csv
+          
+    - name: Read os details from CSV file and return a list
+      community.general.read_csv:
+        path: /tmp/info.csv
+        fieldnames: host,os_release,kernel_release
+        delimiter: ','
+      register: infodata
