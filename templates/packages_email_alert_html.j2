@@ -55,13 +55,14 @@
       </tr>
       {% for server in infodata.list %}
       <tr>
-        <td>{{ server.host }}</td> 
+        <td><a href="#host-{{ server.host }}">{{ server.host }}</td> 
         <td>{{ server.os_release }}</td>
         <td>{{ server.kernel_release }}</td>
       {% endfor %} 
       </tr>
     </table>
    {% for server in infodata.list %}
+     <h2 id="host-{{ server.host }}">{{ server.host }} - Package Info</h2>
    {{ server.host }} Package infodata
 
     <table>
