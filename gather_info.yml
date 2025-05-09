@@ -23,8 +23,8 @@
 
     - name: display
       ansible.builtin.debug:
-        msg: "{{ ansible_facts.packages| to_nice_json }}"        
-
+        msg: "{{ item }}"        
+      loop: "{{ ansible_facts.packages }}"
     # - name: Save report to file (JSON)
     #   copy:
     #     content: |
