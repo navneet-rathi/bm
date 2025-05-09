@@ -24,7 +24,7 @@
     - name: display
       ansible.builtin.debug:
         msg: "{{ item }}"        
-      loop: "{{ ansible_facts.packages }}"
+      loop: "{{ ansible_facts.packages[].['name'] }}"
     # - name: Save report to file (JSON)
     #   copy:
     #     content: |
