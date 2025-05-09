@@ -1,0 +1,38 @@
+---
+- name: Collect OS and package data for compliance
+  hosts: all
+  gather_facts: yes
+  become: true
+
+  tasks:
+
+    - name: Get OS release info
+      shell: cat /etc/os-release
+      register: os_release
+      changed_when: false
+
+    - name: Get kernel version
+      command: uname -r
+      register: kernel_version
+      changed_when: false
+
+    - name: List all installed packages
+      package_facts:
+        manager: auto
+
+
+    - name: display
+      ansible.builtin.debug:
+        msg: "{{ ansible_facts.packages| to_nice_json }}"        
+
+    # - name: Save report to file (JSON)
+    #   copy:
+    #     content: |
+    #       {
+    #         "host": "{{ inventory_hostname }}",
+    #         "os": "{{ os_release.stdout_lines }}",
+    #         "kernel": "{{ kernel_version.stdout }}",
+    #         "installed_packages": {{ ansible_facts.packages | to_nice_json }}
+    #       }
+    #     dest: "/tmp/{{ inventory_hostname }}_package_report.json"
+    #   delegate_to: localhost
