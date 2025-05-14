@@ -112,6 +112,8 @@
         - "nrathi@redhat.com"
         subject: "Alert: server Details"
         body: "{{ lookup('file', '/tmp/alert_email.html') }}"
+        attach:
+          - /tmp/alert_email.html
         username: "dmeonavneet@gmail.com"
         password: "rbfqhoincpyouxqk"
       changed_when: True
