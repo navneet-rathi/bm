@@ -21,3 +21,13 @@
     - name: Display the output of commands
       ansible.builtin.debug:
         msg: "{{ my_commands }}" 
+
+    - name: Running whoami
+      loop: "{{lookup('ansible.builtin.dict',command, wantlist=True)}}"
+      ansible.builtin.shell: "whoami"
+      become_user: "{{ item['value']['user']| default(omit) }}"
+      register: whoami
+
+    - name: Display the output of commands
+      ansible.builtin.debug:
+        msg: "{{ whoami }}" 
