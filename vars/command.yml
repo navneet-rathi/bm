@@ -6,6 +6,7 @@ command:
    # module_name: ansible.builtin.shell
     command: "date"
     dalegate_to: localhost
+    user: user1
     args: 
       chdir: "/root/"
       creates: "/root/somthing.txt"
@@ -13,11 +14,13 @@ command:
   com2:
    # module_name: ansible.builtin.shell
     command: "date"
+    user: user2
     args: 
       chdir: "/root/"
       creates: "/root/somthing.txt"   
 
   com3:
+    user: user3
    # module_name: ansible.builtin.shell
     command: "echo \"This is for testing\" && mkdir navneet_{{ selected_date_fullm }}"  
     args: 
@@ -32,7 +35,7 @@ command:
       chdir: "/root/"
       creates: "/root/somthing.txt"     
     #dalegate_to: localhost
-
+    user: user4
   com5:
    # module_name: ansible.builtin.shell
     command: "echo \"This is for Error testing\" {{ selected_date }} && mkdir -p rahul_{{ selected_date }}"  
@@ -40,21 +43,22 @@ command:
       chdir: "/root/"
       creates: "/root/somthing.txt"     
     #dalegate_to: localhost     
-
+    user: user3
   com6:
    # module_name: ansible.builtin.shell
     command: "echo \"This is for testing\" {{ selected_date }} && mkdir -p rahul_{{ selected_date }} "  
     args: 
       chdir: "/root/"
       creates: "/root/somthing.txt" 
-
+    user: user1
 
   com7:
    # module_name: ansible.builtin.shell
-    command: "echo \"This is for testing\" && mkdir navneet_{{ selected_date_fullm }}"  
+    command: "echo \"This is for testing\" && mkdir -p navneet_{{ selected_date_fullm }}"  
     args: 
       chdir: "/root/"
-      creates: "/root/somthing.txt"     
+      creates: "/root/somthing.txt"
+    user: user2       
     #dalegate_to: localhost                  
   # com2:  
   #   name: app3
