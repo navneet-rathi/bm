@@ -36,6 +36,7 @@ command:
       creates: "/root/somthing.txt"     
     #dalegate_to: localhost
     user: user4
+
   com5:
    # module_name: ansible.builtin.shell
     command: "echo \"This is for Error testing\" {{ selected_date }} && mkdir -p rahul_{{ selected_date }}"  
@@ -44,6 +45,7 @@ command:
       creates: "/root/somthing.txt"     
     #dalegate_to: localhost     
     user: user3
+    
   com6:
    # module_name: ansible.builtin.shell
     command: "echo \"This is for testing\" {{ selected_date }} && mkdir -p rahul_{{ selected_date }} "  
