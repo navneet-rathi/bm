@@ -73,3 +73,87 @@
       ansible.builtin.service:
         name: firewalld
         state: reloaded
+
+
+- name: Clone, update replica, and push back to repo
+  hosts: all
+  gather_facts: no
+  vars:
+    repo_url: "git@github.com:navneet-rathi/sample.git"
+    dest_path: "/tmp/sample"
+    commit_msg: "Update replica count from 0 to 1"
+    search_string: 'replicas:\s*0'
+    replace_string: 'replicas: 1'
+##### ROSA variables ###########
+    cluster_name: my-rosa-cluster
+    machine_pool_name: compute-pool-1
+    instance_type: m5.large
+    replicas: 3
+    region: us-east-1
+  tasks:
+#### Command to add compute instance in ROSA
+    - name: Create a new machine pool using ROSA CLI
+      shell: |
+        rosa create machinepool \
+          --cluster {{ cluster_name }} \
+          --name {{ machine_pool_id }} \
+          --replicas {{ replicas }} \
+          --instance-type {{ instance_type }} \
+          --region {{ region }}
+      register: result
+      check_mode: true
+###
+#  Added for debugging purpose
+    - debug:
+        var: result.stdout
+
+### to make changes in git repo #####
+    - name: Clone Git repository with SSH key
+      ansible.builtin.git:
+        repo: "{{ repo_url }}"
+        dest: "{{ dest_path }}"
+        version: main
+        accept_hostkey: yes
+        #key_file: "~/.ssh/id_rsa"
+        update: yes
+
+    - name: Find all YAML and manifest files
+      ansible.builtin.find:
+        paths: "{{ dest_path }}"
+        patterns: "*.yaml,*.yml"
+        recurse: yes
+      register: yaml_files
+
+    - name: Replace replicas count in all matched files
+      ansible.builtin.replace:
+        path: "{{ item.path }}"
+        regexp: "{{ search_string }}"
+        replace: "{{ replace_string }}"
+      loop: "{{ yaml_files.files }}"
+
+    - name: Configure Git username
+      ansible.builtin.command: git config user.name "ansible-bot"
+      args:
+        chdir: "{{ dest_path }}"
+
+    - name: Configure Git email
+      ansible.builtin.command: git config user.email "nrathi@redhat.com"
+      args:
+        chdir: "{{ dest_path }}"
+
+    - name: Stage the modified file
+      ansible.builtin.command: git add .
+      args:
+        chdir: "{{ dest_path }}"
+
+    - name: Commit the changes
+      ansible.builtin.command: git commit -m "{{ commit_msg }}"
+      args:
+        chdir: "{{ dest_path }}"
+      register: commit_result
+      failed_when: commit_result.rc != 0 and "'nothing to commit'" not in commit_result.stderr
+
+    - name: Push changes back to Git repo
+      ansible.builtin.command: git push origin main
+      args:
+        chdir: "{{ dest_path }}"

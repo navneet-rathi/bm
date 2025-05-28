@@ -1,0 +1,43 @@
+- name: Shift traffic to DR in Akamai GTM
+  hosts: localhost
+  gather_facts: no
+  vars:
+    gtm_domain: "yourdomain.akadns.net"
+    property_name: "my-gtm-property"
+    dc_datacenter_id: 12345
+    dr_datacenter_id: 67890
+    akamai_host: "akab-xxxxxxxx.luna.akamaiapis.net"
+    client_token: "your-client-token"
+    client_secret: "your-client-secret"
+    access_token: "your-access-token"
+
+  tasks:
+
+    - name: Set all traffic to DR datacenter
+      uri:
+        url: "https://{{ akamai_host }}/config-gtm/v1/domains/{{ gtm_domain }}/properties/{{ property_name }}/backupCName"
+        method: PUT
+        headers:
+          Content-Type: "application/json"
+          Authorization: "EG1-HMAC-SHA256 client_token={{ client_token }};access_token={{ access_token }};timestamp={{ '%Y%m%dT%H%M%S+0000' }};nonce={{ 999999999999 }}"
+        body: |
+          {
+            "trafficTargets": [
+              {
+                "datacenterId": {{ dr_datacenter_id }},
+                "weight": 100,
+                "enabled": true
+              },
+              {
+                "datacenterId": {{ dc_datacenter_id }},
+                "weight": 0,
+                "enabled": false
+              }
+            ]
+          }
+        body_format: json
+        status_code: 200
+      register: response
+
+    - debug:
+        var: response.json
