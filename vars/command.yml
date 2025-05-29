@@ -61,24 +61,3 @@ command:
       chdir: "/root/"
       creates: "/root/somthing.txt"
     user: user2       
-    #dalegate_to: localhost                  
-  # com2:  
-  #   name: app3
-  #   version: v2
-  #   port: 8083
-  #   host: podman1
-  # com3:
-  #   name: app5
-  #   version: v4
-  #   port: 8085
-  #   host: podman1
-  # com4:
-  #   name: app7  
-  #   version: v2
-  #   port: 8087
-  #   host: podman1
-  # com5:
-  #   name: app11
-  #   version: v3
-  #   port: 8091
-  #   host: podman1
