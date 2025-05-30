@@ -146,14 +146,14 @@
       args:
         chdir: "{{ dest_path }}"
 
-    - name: Commit the changes
-      ansible.builtin.command: git commit -m "{{ commit_msg }}"
-      args:
-        chdir: "{{ dest_path }}"
-      register: commit_result
-      failed_when: commit_result.rc != 0 and "'nothing to commit'" not in commit_result.stderr
+    # - name: Commit the changes
+    #   ansible.builtin.command: git commit -m "{{ commit_msg }}"
+    #   args:
+    #     chdir: "{{ dest_path }}"
+    #   register: commit_result
+    #   failed_when: commit_result.rc != 0 and "'nothing to commit'" not in commit_result.stderr
 
-    - name: Push changes back to Git repo
-      ansible.builtin.command: git push origin main
-      args:
-        chdir: "{{ dest_path }}"
+    # - name: Push changes back to Git repo
+    #   ansible.builtin.command: git push origin main
+    #   args:
+    #     chdir: "{{ dest_path }}"
