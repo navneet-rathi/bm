@@ -75,54 +75,54 @@
         state: reloaded
 
 
-- name: Clone, update replica, and push back to repo
-  hosts: all
-  gather_facts: no
-  vars:
-    repo_url: "git@github.com:navneet-rathi/sample.git"
-    dest_path: "/tmp/sample"
-    commit_msg: "Update replica count from 0 to 1"
-    search_string: 'replicas:\s*0'
-    replace_string: 'replicas: 1'
+#- name: Clone, update replica, and push back to repo
+#  hosts: all
+#  gather_facts: no
+#  vars:
+#    repo_url: "git@github.com:navneet-rathi/sample.git"
+#    dest_path: "/tmp/sample"
+#    commit_msg: "Update replica count from 0 to 1"
+#    search_string: 'replicas:\s*0'
+#    replace_string: 'replicas: 1'
 ##### ROSA variables ###########
-    cluster_name: my-rosa-cluster
-    machine_pool_id: compute-pool-1
-    instance_type: m5.large
-    replicas: 3
-    region: us-east-1
-  tasks:
-#### Command to add compute instance in ROSA
-    - name: Create a new machine pool using ROSA CLI
-      shell: |
-        rosa create machinepool \
-          --cluster {{ cluster_name }} \
-          --name {{ machine_pool_id }} \
-          --replicas {{ replicas }} \
-          --instance-type {{ instance_type }} \
-          --region {{ region }}
-      register: result
-      check_mode: true
-###
+#    cluster_name: my-rosa-cluster
+#    machine_pool_id: compute-pool-1
+#    instance_type: m5.large
+#    replicas: 3
+#    region: us-east-1
+#  tasks:
+##### Command to add compute instance in ROSA
+#    - name: Create a new machine pool using ROSA CLI
+#      shell: |
+#        rosa create machinepool \
+#          --cluster {{ cluster_name }} \
+#          --name {{ machine_pool_id }} \
+#          --replicas {{ replicas }} \
+#         --instance-type {{ instance_type }} \
+#          --region {{ region }}
+#      register: result
+#      check_mode: true
+####
 #  Added for debugging purpose
-    - debug:
-        var: result.stdout
+#    - debug:
+#        var: result.stdout#
 
 ### to make changes in git repo #####
-    - name: Clone Git repository with SSH key
-      ansible.builtin.git:
-        repo: "{{ repo_url }}"
-        dest: "{{ dest_path }}"
-        version: main
-        accept_hostkey: yes
-        #key_file: "~/.ssh/id_rsa"
-        update: yes
+#    - name: Clone Git repository with SSH key
+#      ansible.builtin.git:
+#        repo: "{{ repo_url }}"
+#        dest: "{{ dest_path }}"
+#        version: main
+#        accept_hostkey: yes
+#        #key_file: "~/.ssh/id_rsa"
+#        update: yes
 
-    - name: Find all YAML and manifest files
-      ansible.builtin.find:
-        paths: "{{ dest_path }}"
-        patterns: "*.yaml,*.yml"
-        recurse: yes
-      register: yaml_files
+#    - name: Find all YAML and manifest files
+#      ansible.builtin.find:
+#        paths: "{{ dest_path }}"
+#        patterns: "*.yaml,*.yml"
+#        recurse: yes
+#      register: yaml_files
 
     - name: Replace replicas count in all matched files
       ansible.builtin.replace:
