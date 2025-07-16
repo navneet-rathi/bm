@@ -4,7 +4,7 @@
   sources:
     - ansible.eda.url_check:
         urls:
-          - http://192.168.1.23
+          - http://192.168.64.40
         delay: 45
   rules:
     - name: Restart Nginx
