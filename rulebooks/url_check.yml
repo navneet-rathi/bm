@@ -16,21 +16,6 @@
             skip_original_data: true 
 
   rules:
-    - name: Restart Nginx
-      condition: event.url_check.status == "down"
-      action:
-        run_job_template:
-          name: nginx_restart
-          organization: Default
-#          job_args:
-#            limit: "{{ event.meta.hosts }}"
-
-    - name: Nginx up
-      condition: event.url_check.status != "down"
-      action:      
-        debug:
-          msg: "Nginx is up and runing..!"
-
     - name: SELinux was disabled
       condition: event.alert.labels.alertname == "selinux disabled" and event.alert.status == "firing"
       action:
@@ -40,7 +25,6 @@
           job_args:
             limit: "{{ event.meta.hosts }}"
             
-
     - name: USB device detected
       condition: event.alert.labels.alertname == "USB Device Detected" and event.alert.status == "firing"
       action:
@@ -60,15 +44,24 @@
           organization: Default
           job_args:
             limit: "{{ event.meta.hosts }}"
-#          extra_vars:  
-#            usb_disable: true
 
     - name: SELinux was enabled
       condition: event.alert.labels.alertname == "selinux disabled" and event.alert.status == "resolved"
       action:
         debug:
-          msg: "enabled on: {{ event.meta.hosts }}"
-                 
+          msg: "enabled on: {{ event.meta.hosts }}"  
+    - name: Restart Nginx
+      condition: event.url_check.status == "down"
+      action:
+        run_job_template:
+          name: nginx_restart
+          organization: Default
+
+    - name: Nginx up
+      condition: event.url_check.status != "down"
+      action:      
+        debug:
+          msg: "Nginx is up and runing..!"
 
     - name: Capture all other events from this source
       condition: event.alert is defined
