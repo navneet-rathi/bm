@@ -40,7 +40,6 @@
         all:
           - event.alert.labels.alertname == "DiskSpaceLow" 
           - event.alert.status == "firing"
-          - eventcount | default("0") | int == 0
       action:
         run_job_template:
           name: Apply_disk_cleanup
@@ -49,14 +48,14 @@
             limit: "{{ event.meta.hosts }}"
         post_events:
           - set_fact:
-              eventcount = 1         
+              eventcount = 1        
 
     - name: DiskSpaceLow -r2
       condition: 
         all:
           - event.alert.labels.alertname == "DiskSpaceLow" 
           - event.alert.status == "firing"
-          - eventcount | int == 1
+          - eventcount == "1"
       action:
         run_job_template:
           name: Apply_disk_cleanup
@@ -72,7 +71,7 @@
         all:
           - event.alert.labels.alertname == "DiskSpaceLow" 
           - event.alert.status == "firing"
-          - eventcount | int == 2
+          - eventcount == "2"
       action:
         run_job_template:
           name: Apply_disk_cleanup
@@ -81,7 +80,7 @@
             limit: "{{ event.meta.hosts }}"
         post_events:
           - set_fact:
-              eventcount | int = 3            
+              eventcount = 3            
 
     - name: DiskSpaceLow issue and now its fixed
       condition: 
@@ -93,7 +92,7 @@
           msg: "enabled on: {{ event.meta.hosts }}"
         post_events:
           - set_fact:
-              eventcount | int = 0             
+              eventcount = "0"             
 
     - name: USB device detected
       condition:
