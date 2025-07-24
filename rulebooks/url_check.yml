@@ -40,11 +40,16 @@
             extra_vars:
               cleanup: 6
         post_events:
-          - set_fact:
-              eventcount = 1        
+          ruleset: DiskSpaceLow -r2
+          event:
+            eventcount : 1        
 
     - name: DiskSpaceLow -r2
       condition: event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "firing" and eventcount == "1"
+      throttle:
+        once_after: 1 minutes
+        group_by_attributes:
+          - event.meta.hosts
       action:
         run_job_template:
           name: Apply_disk_cleanup
@@ -54,11 +59,16 @@
             extra_vars:
               cleanup: 3
         post_events:
-          - set_fact:
-              eventcount = 2           
+          ruleset: DiskSpaceLow -r3
+          event:
+            eventcount : 2              
 
     - name: DiskSpaceLow -r3
       condition: event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "firing" and eventcount == "2"
+      throttle:
+        once_after: 1 minutes
+        group_by_attributes:
+          - event.meta.hosts      
       action:
         run_job_template:
           name: Apply_disk_cleanup
