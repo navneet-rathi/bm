@@ -27,8 +27,23 @@
       condition: event.alert.labels.alertname == "selinux disabled" and event.alert.status == "resolved"
       action:
         debug:
-          msg: "enabled on: {{ event.meta.hosts }}"      
-            
+          msg: "enabled on: {{ event.meta.hosts }}"
+
+    - name: DiskSpaceLow 
+      condition: event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "firing"
+      action:
+        run_job_template:
+          name: Apply_disk_cleanup
+          organization: Default
+          job_args:
+            limit: "{{ event.meta.hosts }}"
+
+    - name: DiskSpaceLow issue and now its fixed
+      condition: event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "resolved"
+      action:
+        debug:
+          msg: "enabled on: {{ event.meta.hosts }}"
+
     - name: USB device detected
       condition: event.alert.labels.alertname == "USB Device Detected" and event.alert.status == "firing"
       action:
