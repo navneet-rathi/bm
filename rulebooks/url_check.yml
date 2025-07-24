@@ -25,7 +25,7 @@
           job_args:
             limit: "{{ event.meta.hosts }}"
 
-    - name: SELinux was disabled
+    - name: SELinux was disabled and now fixed
       condition: event.alert.labels.alertname == "selinux disabled" and event.alert.status == "resolved"
       action:      
         debug:
