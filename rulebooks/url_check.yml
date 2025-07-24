@@ -35,17 +35,53 @@
         debug:
           msg: "enabled on: {{ event.meta.hosts }}"
 
-    - name: DiskSpaceLow 
+    - name: DiskSpaceLow -r1
       condition: 
         all:
           - event.alert.labels.alertname == "DiskSpaceLow" 
           - event.alert.status == "firing"
+          -  redis_get("disk_alert_{{ event.payload.labels.instance }}_{{ event.payload.labels.mountpoint }}") | default("0") | int == 0
       action:
         run_job_template:
           name: Apply_disk_cleanup
           organization: Default
           job_args:
             limit: "{{ event.meta.hosts }}"
+        post_events:
+          - set_fact:
+              redis_set("disk_alert_{{ event.payload.labels.instance }}_{{ event.payload.labels.mountpoint }}", "1")            
+
+    - name: DiskSpaceLow -r2
+      condition: 
+        all:
+          - event.alert.labels.alertname == "DiskSpaceLow" 
+          - event.alert.status == "firing"
+          - redis_get("disk_alert_{{ event.payload.labels.instance }}_{{ event.payload.labels.mountpoint }}") | int == 1
+      action:
+        run_job_template:
+          name: Apply_disk_cleanup
+          organization: Default
+          job_args:
+            limit: "{{ event.meta.hosts }}"
+        post_events:
+          - set_fact:
+              redis_set("disk_alert_{{ event.payload.labels.instance }}_{{ event.payload.labels.mountpoint }}", "2")            
+
+    - name: DiskSpaceLow -r3
+      condition: 
+        all:
+          - event.alert.labels.alertname == "DiskSpaceLow" 
+          - event.alert.status == "firing"
+          - - redis_get("disk_alert_{{ event.payload.labels.instance }}_{{ event.payload.labels.mountpoint }}") | int == 2
+      action:
+        run_job_template:
+          name: Apply_disk_cleanup
+          organization: Default
+          job_args:
+            limit: "{{ event.meta.hosts }}"
+        post_events:
+          - set_fact:
+              redis_set("disk_alert_{{ event.payload.labels.instance }}_{{ event.payload.labels.mountpoint }}", "3")               
 
     - name: DiskSpaceLow issue and now its fixed
       condition: 
