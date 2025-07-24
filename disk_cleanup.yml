@@ -4,7 +4,7 @@
   become: yes
   tasks:
     - name: Disk Cleanup
-      ansible.builtin.dbug:
+      ansible.builtin.debug:
         msg: "{{ event }}"
 
     #- name: Clean /var/log
