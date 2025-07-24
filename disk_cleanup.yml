@@ -9,7 +9,7 @@
      ##keep it for ref as command can be changed
      #ansible.builtin.shell: "find /var/log -type f -name "*.log" -mtime +3" #-delete"
     - name: find files to be deleted on {{ ansible_eda.event.alert.labels.mountpoint }}
-      ansible.builtin.shell: "find {{ ansible_eda.event.alert.labels.mountpoint }} -type f -mtime +6"
+      ansible.builtin.shell: "find {{ ansible_eda.event.alert.labels.mountpoint }} -type f -mtime +{{ cleanup }}"
       register: fileslist
 
     - name: display list
@@ -17,7 +17,7 @@
         msg: "{{ fileslist.stdout }}"
 
     - name: delete file using shell utility on {{ ansible_eda.event.alert.labels.mountpoint }}
-      ansible.builtin.shell: "find {{ ansible_eda.event.alert.labels.mountpoint }} -type f -mtime +6 -delete" 
+      ansible.builtin.shell: "find {{ ansible_eda.event.alert.labels.mountpoint }} -type f -mtime +{{ cleanup }} -delete" 
 
 
     - name: Checking Disk Status after the Cleanup
