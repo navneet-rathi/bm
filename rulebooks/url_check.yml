@@ -84,6 +84,8 @@
 
     - name: Restart Nginx
       condition: event.url_check.status == "down"
+      throttle:
+        once_after: 1 minutes
       action:
         run_job_template:
           name: nginx_restart
