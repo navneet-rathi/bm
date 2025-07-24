@@ -63,11 +63,11 @@
           name: nginx_restart
           organization: Default
 
-    - name: Nginx up
-      condition: event.url_check.status != "down"
-      action:      
-        debug:
-          msg: "Nginx is up and runing..!"
+   # - name: Nginx up
+   #   condition: event.url_check.status != "down"
+   #   action:      
+   #     debug:
+   #       msg: "Nginx is up and runing..!"
 
     - name: Capture all other events from this source
       condition: event.alert is defined
