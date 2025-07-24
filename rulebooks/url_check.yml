@@ -124,6 +124,8 @@
       condition: event.url_check.status == "down"
       throttle:
         once_after: 1 minutes
+        group_by_attributes:
+          - event.meta.hosts
       action:
         run_job_template:
           name: nginx_restart
