@@ -40,7 +40,7 @@
         all:
           - event.alert.labels.alertname == "DiskSpaceLow" 
           - event.alert.status == "firing"
-          - (redis_get(facts.redis_key) | default("0") | int) == 0
+          - event_count | default("0") | int == 0
       action:
         run_job_template:
           name: Apply_disk_cleanup
@@ -49,14 +49,14 @@
             limit: "{{ event.meta.hosts }}"
         post_events:
           - set_fact:
-              redis_set(facts.redis_key, "1")         
+              event_count = 1         
 
     - name: DiskSpaceLow -r2
       condition: 
         all:
           - event.alert.labels.alertname == "DiskSpaceLow" 
           - event.alert.status == "firing"
-          - (redis_get(facts.redis_key) | int) == 1
+          - event_count | int == 1
       action:
         run_job_template:
           name: Apply_disk_cleanup
@@ -65,14 +65,14 @@
             limit: "{{ event.meta.hosts }}"
         post_events:
           - set_fact:
-              redis_set(facts.redis_key, "2")           
+              event_count = 2           
 
     - name: DiskSpaceLow -r3
       condition: 
         all:
           - event.alert.labels.alertname == "DiskSpaceLow" 
           - event.alert.status == "firing"
-          - (redis_get(facts.redis_key) | int) == 2
+          - event_count | int == 2
       action:
         run_job_template:
           name: Apply_disk_cleanup
@@ -81,7 +81,7 @@
             limit: "{{ event.meta.hosts }}"
         post_events:
           - set_fact:
-              redis_set(facts.redis_key, "3")             
+              event_count | int = 3            
 
     - name: DiskSpaceLow issue and now its fixed
       condition: 
@@ -93,7 +93,7 @@
           msg: "enabled on: {{ event.meta.hosts }}"
         post_events:
           - set_fact:
-              redis_set(facts.redis_key, "0")                
+              event_count | int = 0             
 
     - name: USB device detected
       condition:
