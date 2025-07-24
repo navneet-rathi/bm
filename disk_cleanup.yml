@@ -6,9 +6,19 @@
     - name: Disk Cleanup
       ansible.builtin.debug:
         msg: "{{ ansible_eda.event }}"
+     ##keep it for ref as command can be changed
+     #shell: "find /var/log -type f -name "*.log" -mtime +3" #-delete"
+    - name: find files to be deleted on {{ ansible_eda.event.alert.labels.mountpoint }}
+      shell: "find {{ ansible_eda.event.alert.labels.mountpoint }} -type f -mtime +6"
+      register: fileslist
 
-    #- name: Clean /var/log
-    #  shell: find /var/log -type f -name "*.log" -mtime +3 -delete
+    - name: display list
+      ansible.builtin.debug:
+        msg: "{{ fileslist.stdout }}"
 
+    - name: delete file using shell utility on {{ ansible_eda.event.alert.labels.mountpoint }}
+      shell: "find {{ ansible_eda.event.alert.labels.mountpoint }} -type f -mtime +6 -delete"            
     #- name: Clean /tmp
     #  shell: find /tmp -type f -mtime +1 -delete
+
+
