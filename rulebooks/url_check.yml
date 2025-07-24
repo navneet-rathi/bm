@@ -16,7 +16,7 @@
             skip_original_data: true 
 
   rules:
-    - name: SELinux was disabled
+    - name: SELinux is disabled
       condition: event.alert.labels.alertname == "selinux disabled" and event.alert.status == "firing"
       action:
         run_job_template:
@@ -24,6 +24,12 @@
           organization: Default
           job_args:
             limit: "{{ event.meta.hosts }}"
+
+    - name: SELinux was disabled
+      condition: event.alert.labels.alertname == "selinux disabled" and event.alert.status == "resolved"
+      action:      
+        debug:
+          msg: "selinux is enforcing now..!"          
             
     - name: USB device detected
       condition: event.alert.labels.alertname == "USB Device Detected" and event.alert.status == "firing"
