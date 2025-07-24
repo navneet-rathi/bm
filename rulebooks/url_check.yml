@@ -40,7 +40,7 @@
         all:
           - event.alert.labels.alertname == "DiskSpaceLow" 
           - event.alert.status == "firing"
-          -  redis_get("disk_alert_{{ event.payload.labels.instance }}_{{ event.payload.labels.mountpoint }}") | default("0") | int == 0
+          - redis_get("disk_alert_{{ event.payload.labels.instance }}_{{ event.payload.labels.mountpoint }}") | default("0") | int == 0
       action:
         run_job_template:
           name: Apply_disk_cleanup
@@ -72,7 +72,7 @@
         all:
           - event.alert.labels.alertname == "DiskSpaceLow" 
           - event.alert.status == "firing"
-          - - redis_get("disk_alert_{{ event.payload.labels.instance }}_{{ event.payload.labels.mountpoint }}") | int == 2
+          - redis_get("disk_alert_{{ event.payload.labels.instance }}_{{ event.payload.labels.mountpoint }}") | int == 2
       action:
         run_job_template:
           name: Apply_disk_cleanup
