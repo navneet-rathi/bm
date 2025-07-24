@@ -25,11 +25,11 @@
           job_args:
             limit: "{{ event.meta.hosts }}"
 
-    - name: SELinux was disabled and now fixed
+    - name: SELinux was enabled and now its fixed
       condition: event.alert.labels.alertname == "selinux disabled" and event.alert.status == "resolved"
-      action:      
+      action:
         debug:
-          msg: "selinux is enforcing now..!"          
+          msg: "enabled on: {{ event.meta.hosts }}"      
             
     - name: USB device detected
       condition: event.alert.labels.alertname == "USB Device Detected" and event.alert.status == "firing"
@@ -51,11 +51,8 @@
           job_args:
             limit: "{{ event.meta.hosts }}"
 
-    - name: SELinux was enabled
-      condition: event.alert.labels.alertname == "selinux disabled" and event.alert.status == "resolved"
-      action:
-        debug:
-          msg: "enabled on: {{ event.meta.hosts }}"  
+
+
     - name: Restart Nginx
       condition: event.url_check.status == "down"
       action:
