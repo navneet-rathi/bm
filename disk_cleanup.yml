@@ -5,7 +5,7 @@
   tasks:
     - name: Disk Cleanup
       ansible.builtin.debug:
-        msg: "{{ event }}"
+        msg: "{{ ansible_eda.event }}"
 
     #- name: Clean /var/log
     #  shell: find /var/log -type f -name "*.log" -mtime +3 -delete
