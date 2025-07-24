@@ -49,6 +49,7 @@
           organization: Default
           job_args:
             limit: "{{ event.meta.hosts }}"
+            cleanup: 3
         post_events:
           - set_fact:
               eventcount = 2           
@@ -61,6 +62,7 @@
           organization: Default
           job_args:
             limit: "{{ event.meta.hosts }}"
+            cleanup: 1
         post_events:
           - set_fact:
               eventcount = 3            
