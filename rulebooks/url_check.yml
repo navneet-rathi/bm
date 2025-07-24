@@ -51,8 +51,6 @@
           job_args:
             limit: "{{ event.meta.hosts }}"
 
-
-
     - name: Restart Nginx
       condition: event.url_check.status == "down"
       action:
