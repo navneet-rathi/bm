@@ -1,0 +1,14 @@
+---
+- name: Cleanup disk space
+  hosts: all
+  become: yes
+  tasks:
+    - name: Disk Cleanup
+      ansible.builtin.dbug:
+        msg: "{{ event }}"
+
+    #- name: Clean /var/log
+    #  shell: find /var/log -type f -name "*.log" -mtime +3 -delete
+
+    #- name: Clean /tmp
+    #  shell: find /tmp -type f -mtime +1 -delete
