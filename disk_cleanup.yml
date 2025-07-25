@@ -22,10 +22,10 @@
 
     - name: Checking Disk Status after the Cleanup
       ansible.builtin.shell: "df -h"
-      register: dick_stat
+      register: disk_stat
 
     - ansible.builtin.debug:
-        msg: "{{ dick_stat.stdout_lines }}"               
+        msg: "{{ disk_stat.stdout_lines }}"               
     #- name: Clean /tmp
     #  shell: find /tmp -type f -mtime +1 -delete
 
