@@ -39,3 +39,19 @@
     - name: display se_status
       ansible.builtin.debug:
         msg: "{{ se_permessive }}"
+
+    - name: make sure SE is permissive
+      ansible.builtin.shell: cat /etc/selinux/config
+      register : readfile 
+
+    - name: display file
+      ansible.builtin.debug:
+        msg: "{{ readfile }}"   
+
+    - name: make sure SE is permissive
+      ansible.builtin.shell: getenforce
+      register : readgetenforce 
+
+    - name: display file
+      ansible.builtin.debug:
+        msg: "{{ readgetenforce }}"      
