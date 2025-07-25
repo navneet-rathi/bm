@@ -14,6 +14,14 @@
             data_path_separator: .
             skip_original_data: true 
   rules:
+    - name: Initialize facts
+      condition: event.payload.type == "init"
+      action:
+        set_fact:
+           fact:
+             cleanup: 6
+          
+
     - name: DiskSpaceLow -r1
       condition: event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "firing" 
       action:
@@ -25,12 +33,12 @@
             extra_vars:
               cleanup: 6
           set_fact:    
-            ruleset: DiskSpaceLow -r2
+          #  ruleset: DiskSpaceLow -r2
             fact:
               cleanup : 6        
 
     - name: DiskSpaceLow -r2
-      condition:  event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "firing" 
+      condition:  event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "firing" and "{{ facts.cleanup}}" == 6
       action:
         run_job_template:
           name: Apply_disk_cleanup
@@ -40,12 +48,12 @@
             extra_vars:
               cleanup: 3
           set_fact:    
-            ruleset: DiskSpaceLow -r3
+           # ruleset: DiskSpaceLow -r3
             fact:
               cleanup : 3                
 
     - name: DiskSpaceLow -r3
-      condition: event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "firing" 
+      condition: event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "firing" "{{ facts.cleanup}}" == 3
       action:
         run_job_template:
           name: Apply_disk_cleanup
