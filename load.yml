@@ -12,5 +12,30 @@
       register: fileslist
 
     - name: Display genrated load
+      ansible.builtin.shell: df -h
+      register: disk_status
+
+    - name: disk_status
       ansible.builtin.debug:
-        msg: "{{ fileslist }}" 
+        msg: "{{ disk_status }}"
+
+    - name: Make sure service is up and running | Nginx service
+      ansible.builtin.service:
+        name: nginx
+        state: stopped
+      become: true
+      register: nginx_stop
+    
+    - name: make sure service is stopped
+      ansible.builtin.debug:
+        msg: "{{ nginx_stop }}"
+
+    - name: Put SELinux in permissive mode, logging actions that would be blocked.
+      ansible.posix.selinux:
+        policy: targeted
+        state: permissive
+      register: se_permessive
+
+    - name: display se_status
+      ansible.builtin.debug:
+        msg: "{{ se_permessive }}"
