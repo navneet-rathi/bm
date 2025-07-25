@@ -64,7 +64,7 @@
             eventcount : 2              
 
     - name: DiskSpaceLow -r3
-      condition: event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "firing" and facts.disk_alerts.event.alert.labels.alertname'_'event.alert.labels.mountpoint == 3
+      condition: event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "firing" and facts.disk_alerts.event.alert.labels.alertname_event.alert.labels.mountpoint == 3
       throttle:
         once_after: 1 minutes
         group_by_attributes:
