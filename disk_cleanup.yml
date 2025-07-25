@@ -34,13 +34,13 @@
         data:
           counter: 1
       when: "{{ cleanup }} == 6"  
-
+###############
     - name: settting up the counter
       ansible.builtin.set_stats:
         data:
           counter: 2
       when: "{{ cleanup }} == 3"  
-
+#########
     - name: settting up the counter
       ansible.builtin.set_stats:
         data:

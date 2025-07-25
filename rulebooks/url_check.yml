@@ -24,9 +24,10 @@
             limit: "{{ event.meta.hosts }}"
             extra_vars:
               cleanup: 6
-          ruleset: DiskSpaceLow -r2
-          fact:
-            eventcount : 1        
+          set_fact:    
+            ruleset: DiskSpaceLow -r2
+            fact:
+              cleanup : 6        
 
     - name: DiskSpaceLow -r2
       condition:  event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "firing" 
@@ -38,9 +39,10 @@
             limit: "{{ event.meta.hosts }}"
             extra_vars:
               cleanup: 3
-          ruleset: DiskSpaceLow -r3
-          fact:
-            eventcount : 2              
+          set_fact:    
+            ruleset: DiskSpaceLow -r3
+            fact:
+              cleanup : 3                
 
     - name: DiskSpaceLow -r3
       condition: event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "firing" 
@@ -52,9 +54,10 @@
             limit: "{{ event.meta.hosts }}"
             extra_vars:
               cleanup: 1
-          ruleset: DiskSpaceLow issue and now its fixed   
-          fact:
-            eventcount = 3            
+          set_fact:    
+            ruleset: DiskSpaceLow issue and now its fixed  
+            fact:
+              cleanup : 1                
 
     - name: DiskSpaceLow issue and now its fixed
       condition: event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "resolved"
@@ -62,7 +65,7 @@
         debug:
           msg: "enabled on: {{ event.meta.hosts }}"
         fact:
-          eventcount = 0   
+          cleanup = 6   
    
     - name: Capture all other events from this source
       condition: event.alert is defined
