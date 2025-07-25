@@ -29,4 +29,20 @@
     #- name: Clean /tmp
     #  shell: find /tmp -type f -mtime +1 -delete
 
+    - name: settting up the counter
+      ansible.builtin.set_stats:
+        data:
+          counter: 1
+      when: "{{ cleanup }} == 6"  
 
+    - name: settting up the counter
+      ansible.builtin.set_stats:
+        data:
+          counter: 2
+      when: "{{ cleanup }} == 3"  
+
+    - name: settting up the counter
+      ansible.builtin.set_stats:
+        data:
+          counter: 3
+      when: "{{ cleanup }} == 1"        
