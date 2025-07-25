@@ -21,7 +21,6 @@
            fact:
              cleanup: 6
           
-
     - name: DiskSpaceLow -r1
       condition: event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "firing" 
       action:
