@@ -15,7 +15,7 @@
             skip_original_data: true 
   rules:
     - name: Initialize facts
-      condition: event.payload.type == "init"
+      condition: true
       action:
         set_fact:
            fact:
