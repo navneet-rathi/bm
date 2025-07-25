@@ -15,7 +15,7 @@
             skip_original_data: true 
   rules:
     - name: Initialize facts
-      condition: true
+      condition: event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "firing" 
       action:
         set_fact:
            fact:
