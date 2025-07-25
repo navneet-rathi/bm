@@ -38,7 +38,7 @@
           job_args:
             limit: "{{ event.meta.hosts }}"
             extra_vars:
-              cleanup: 3        
+              cleanup: 1        
 
     - name: DiskSpaceLow issue and now its fixed
       condition: event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "resolved"
