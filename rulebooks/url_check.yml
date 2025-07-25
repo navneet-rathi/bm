@@ -15,7 +15,7 @@
             skip_original_data: true 
   rules:
     - name: Increment alert count
-      condition: event.payload.labels.alertname == "DiskSpaceLow"
+      condition: event.alert.labels.alertname == "DiskSpaceLow"
       action:
         set_fact:
           alert_key: "{{event.alert.labels.alertname }}_{{ event.alert.labels.mountpoint }}"
