@@ -14,23 +14,23 @@
             data_path_separator: .
             skip_original_data: true 
   rules:
-    - name: SELinux is disabled
-      condition: event.alert.labels.alertname == "selinux disabled" and event.alert.status == "firing"
+    - name: Increment alert count
+      condition: event.payload.labels.alertname == "DiskSpaceLow"
       action:
-        run_job_template:
-          name: Apply baseline
-          organization: Default
-          job_args:
-            limit: "{{ event.meta.hosts }}"
+        set_fact:
+          alert_key: "{{event.alert.labels.alertname }}_{{ event.alert.labels.mountpoint }}"
+          # Build or increment a simple dictionary
+          disk_alerts: "{{
+            (facts.disk_alerts if facts.disk_alerts is defined else {})
+            | combine({ event.alert.labels.alertname ~ '_' ~ event.alert.labels.mountpoint:
+                        (facts.disk_alerts[event.alert.labels.alertname ~ '_' ~ event.alert.labels.mountpoint]
+                         if (facts.disk_alerts is defined and
+                             event.alert.labels.alertname ~ '_' ~ event.alert.labels.mountpoint in facts.disk_alerts)
+                         else 0) + 1 })}}"
 
-    - name: SELinux was enabled and now its fixed
-      condition: event.alert.labels.alertname == "selinux disabled" and  event.alert.status == "resolved"
-      action:
-        debug:
-          msg: "enabled on: {{ event.meta.hosts }}"
 
     - name: DiskSpaceLow -r1
-      condition: event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "firing"
+      condition: event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "firing" and facts.disk_alerts[event.alert.labels.alertname ~ '_' ~ event.alert.labels.mountpoint] == 1
       action:
         run_job_template:
           name: Apply_disk_cleanup
@@ -45,7 +45,7 @@
             eventcount : 1        
 
     - name: DiskSpaceLow -r2
-      condition: event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "firing" and eventcount == "1"
+      condition: event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "firing" and facts.disk_alerts[event.alert.labels.alertname ~ '_' ~ event.alert.labels.mountpoint] == 2
       throttle:
         once_after: 1 minutes
         group_by_attributes:
@@ -64,7 +64,7 @@
             eventcount : 2              
 
     - name: DiskSpaceLow -r3
-      condition: event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "firing" and eventcount == "2"
+      condition: event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "firing" and facts.disk_alerts[event.alert.labels.alertname ~ '_' ~ event.alert.labels.mountpoint] == 3
       throttle:
         once_after: 1 minutes
         group_by_attributes:
@@ -86,47 +86,9 @@
       action:
         debug:
           msg: "enabled on: {{ event.meta.hosts }}"
-        post_events:
-          - set_fact:
-              eventcount = "0"             
-
-    - name: USB device detected
-      condition: event.alert.labels.alertname == "USB Device Detected" and event.alert.status == "firing"
-      action:
-        run_job_template:
-          name: 01-js-usb
-          organization: Default
-          job_args:
-            limit: "{{ event.meta.hosts }}"
-          extra_vars:  
-            usb_disable: true
-
-    - name: UserPasswordExpired except Administrato
-      condition: event.alert.labels.alertname == "UserPasswordExpired except Administrator" and event.alert.status == "firing"
-      action:
-        run_job_template:
-          name: 01-email-alert
-          organization: Default
-          job_args:
-            limit: "{{ event.meta.hosts }}"
-
-    - name: Restart Nginx
-      condition: event.url_check.status == "down"
-      #throttle:
-      #  once_after: 1 minutes
-      #  group_by_attributes:
-      #    - event.meta.hosts
-      action:
-        run_job_template:
-          name: nginx_restart
-          organization: Default
-
-   # - name: Nginx up
-   #   condition: event.url_check.status != "down"
-   #   action:      
-   #     debug:
-   #       msg: "Nginx is up and runing..!"
-
+          set_fact:
+            disk_alerts: {}
+   
     - name: Capture all other events from this source
       condition: event.alert is defined
       action:
