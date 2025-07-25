@@ -1,0 +1,16 @@
+---
+- name: Disk space filling play
+  hosts: all
+  become: yes
+  tasks:
+    - name: script function
+      ansible.builtin.debug:
+        msg: "its a simple script which will fill the space with dummy data"
+        
+    - name: genrate the dummy files in /home directory
+      ansible.builtin.shell: "sh /home/nrathi/random.sh"
+      register: fileslist
+
+    - name: Display genrated load
+      ansible.builtin.debug:
+        msg: "{{ fileslist }}" 
