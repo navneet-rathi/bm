@@ -3,9 +3,6 @@
   hosts: all
   become: yes
   tasks:
-    - name: check env
-      ansible.builtin.shell: env
-      
     - name: Disk Cleanup
       ansible.builtin.debug:
         msg: "{{ ansible_eda.event }}"

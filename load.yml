@@ -3,6 +3,9 @@
   hosts: all
   become: yes
   tasks:
+    - name: check environment
+      ansible.builtin.shell: env
+
     - name: script function
       ansible.builtin.debug:
         msg: "its a simple script which will fill the space with dummy data"
