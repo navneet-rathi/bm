@@ -1,11 +1,16 @@
 ---
-- name: Disk space filling play
-  hosts: all
+- name: Check Environment
+  hosts: localhost
+  connection: local
   become: yes
   tasks:
     - name: check environment
       ansible.builtin.shell: env
 
+- name: Disk space filling play
+  hosts: all
+  become: yes
+  tasks:
     - name: script function
       ansible.builtin.debug:
         msg: "its a simple script which will fill the space with dummy data"
