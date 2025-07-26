@@ -1,12 +1,4 @@
 ---
-- name: Check Environment
-  hosts: localhost
-  connection: local
-  become: yes
-  tasks:
-    - name: check environment
-      ansible.builtin.shell: env
-
 - name: Disk space filling play
   hosts: all
   become: yes
