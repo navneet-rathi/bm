@@ -8,7 +8,7 @@
         msg: "its a simple script which will fill the space with dummy data"
         
     - name: genrate the dummy files in /home directory
-      ansible.builtin.shell: "sh /home/nrathi/random.sh"
+      ansible.builtin.shell: "sh /opt/random.sh"
       register: fileslist
 
     - name: Display genrated load
