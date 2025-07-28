@@ -15,7 +15,7 @@
       ansible.builtin.shell: "cp -ar code.tar.gz /backup/latest-backup.tar.gz"
       
     - name: find files to be deleted on {{ ansible_eda.event.alert.labels.mountpoint }}
-      ansible.builtin.shell: "find {{ ansible_eda.event.alert.labels.mountpoint }} -type f  -name "*.log" -mtime +{{ cleanup }}"
+      ansible.builtin.shell: "find {{ ansible_eda.event.alert.labels.mountpoint }} -type f  -name *.log -mtime +{{ cleanup }}"
       register: fileslist
 
     - name: display list
@@ -23,7 +23,7 @@
         msg: "{{ fileslist.stdout }}"
 
     - name: delete file using shell utility on {{ ansible_eda.event.alert.labels.mountpoint }}
-      ansible.builtin.shell: "find {{ ansible_eda.event.alert.labels.mountpoint }} -type f -mtime +{{ cleanup }} -delete" 
+      ansible.builtin.shell: "find {{ ansible_eda.event.alert.labels.mountpoint }} -type f -name *.log  -mtime +{{ cleanup }} -delete" 
 
 
     - name: Checking Disk Status after the Cleanup
