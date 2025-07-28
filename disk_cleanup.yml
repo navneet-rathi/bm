@@ -10,10 +10,14 @@
      #ansible.builtin.shell: "find /var/log -type f -name "*.log" -mtime +3" #-delete"
     - name: Take backup before cleanup
       ansible.builtin.shell: "tar -czvf latest-backup.tar.gz code*.py"
+      args:
+        chdir: /home/nrathi
        
     - name: copy to secure location
       ansible.builtin.shell: "cp -ar code.tar.gz /backup/latest-backup.tar.gz"
-      
+      args:
+        chdir: /home/nrathi
+        
     - name: find files to be deleted on {{ ansible_eda.event.alert.labels.mountpoint }}
       ansible.builtin.shell: "find {{ ansible_eda.event.alert.labels.mountpoint }} -type f  -name *.log -mtime +{{ cleanup }}"
       register: fileslist
