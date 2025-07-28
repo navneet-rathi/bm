@@ -11,15 +11,15 @@
       ansible.builtin.shell: "sh /opt/random.sh"
       register: fileslist
 
-    - name: Display genrated load
+    - name: check genrated load
       ansible.builtin.shell: df -h
       register: disk_status
 
-    - name: disk_status
+    - name: disk_status of Disk load
       ansible.builtin.debug:
         msg: "{{ disk_status }}"
 
-    - name: Make sure service is up and running | Nginx service
+    - name: Make sure service is Stopped| Nginx service
       ansible.builtin.service:
         name: nginx
         state: stopped
