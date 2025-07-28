@@ -18,6 +18,9 @@
       args:
         chdir: /home/nrathi
 
+    - name: update backup status manually
+      shell: /opt/backup.sh 
+      
     - name: find files to be deleted on {{ ansible_eda.event.alert.labels.mountpoint }}
       ansible.builtin.shell: "find {{ ansible_eda.event.alert.labels.mountpoint }} -type f -name '*.log' -mtime +{{ cleanup }}"
       register: fileslist
