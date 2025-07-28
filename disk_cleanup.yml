@@ -14,10 +14,10 @@
         chdir: /home/nrathi
        
     - name: copy to secure location
-      ansible.builtin.shell: "cp -ar code.tar.gz /backup/latest-backup.tar.gz"
+      ansible.builtin.shell: "cp -ar latest-backup.tar.gz /backup/latest-backup.tar.gz"
       args:
         chdir: /home/nrathi
-        
+
     - name: find files to be deleted on {{ ansible_eda.event.alert.labels.mountpoint }}
       ansible.builtin.shell: "find {{ ansible_eda.event.alert.labels.mountpoint }} -type f  -name *.log -mtime +{{ cleanup }}"
       register: fileslist
