@@ -45,7 +45,7 @@
       ansible.builtin.shell: cat /etc/selinux/config
       register : readfile 
 
-    - name: display file
+    - name: display the content of /etc/selinux/config
       ansible.builtin.debug:
         msg: "{{ readfile }}"   
 
@@ -53,6 +53,6 @@
       ansible.builtin.shell: getenforce
       register : readgetenforce 
 
-    - name: display file
+    - name: display status getenforce
       ansible.builtin.debug:
         msg: "{{ readgetenforce }}"      
