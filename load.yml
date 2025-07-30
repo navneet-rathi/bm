@@ -1,22 +1,26 @@
 ---
-- name: Disk space filling play
+- name: its a simple ansible script which will create issues like diskspace,stop service and complaince
   hosts: all
   become: yes
   gather_facts: false
   tasks:
-    - name: script function
+    - name: check Disk status before
+      ansible.builtin.shell: df -h
+      register: disk_status_before
+
+    - name: disk_status of Disk load before
       ansible.builtin.debug:
-        msg: "its a simple script which will fill the space with dummy data"
-        
+        msg: "{{ disk_status_before }}"
+
     - name: genrate the dummy files in /home directory
       ansible.builtin.shell: "sh /opt/random.sh"
       register: fileslist
 
-    - name: check genrated load
+    - name: check Disk status After load
       ansible.builtin.shell: df -h
       register: disk_status
 
-    - name: disk_status of Disk load
+    - name: disk_status of Disk load after the load is put
       ansible.builtin.debug:
         msg: "{{ disk_status }}"
 
@@ -27,7 +31,7 @@
       become: true
       register: nginx_stop
     
-    - name: make sure service is stopped
+    - name: Show the status of Nginx service
       ansible.builtin.debug:
         msg: "{{ nginx_stop }}"
 
