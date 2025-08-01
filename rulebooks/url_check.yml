@@ -16,10 +16,11 @@
             skip_original_data: true
 
     - ansible.eda.webhook:
+        host: 0.0.0.0
         port: 5000             
-################                     
+####################                     
   rules:
-    - name: SELinux is disabled
+    - name: R1 - SELinux is disabled
       condition: event.alert.labels.alertname == "selinux disabled" and event.alert.status == "firing"
       action:
         run_job_template:
@@ -28,13 +29,13 @@
           job_args:
             limit: "{{ event.meta.hosts }}"
 
-    - name: SELinux was enabled and now its fixed
+    - name: R2 - SELinux was enabled and now its fixed
       condition: event.alert.labels.alertname == "selinux disabled" and  event.alert.status == "resolved"
       action:
         debug:
           msg: "enabled on: {{ event.meta.hosts }}"
 
-    - name: DiskSpaceLow -r1
+    - name: R3 -DiskSpaceLow
       condition: event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "firing"
       action:
         run_job_template:
@@ -45,7 +46,7 @@
             extra_vars:
               cleanup: 1        
 
-    - name: DiskSpaceLow issue and now its fixed
+    - name: R4 - DiskSpaceLow issue and now its fixed
       condition: event.alert.labels.alertname == "DiskSpaceLow" and event.alert.status == "resolved"
       action:
         debug:
@@ -54,7 +55,7 @@
           - set_fact:
               eventcount = "0"             
 
-    - name: USB device detected
+    - name: R5 - USB device detected
       condition: event.alert.labels.alertname == "USB Device Detected" and event.alert.status == "firing"
       action:
         run_job_template:
@@ -65,7 +66,7 @@
           extra_vars:  
             usb_disable: true
 
-    - name: UserPasswordExpired except Administrato
+    - name: R6 - UserPasswordExpired except Administrato
       condition: event.alert.labels.alertname == "UserPasswordExpired except Administrator" and event.alert.status == "firing"
       action:
         run_job_template:
@@ -74,7 +75,7 @@
           job_args:
             limit: "{{ event.meta.hosts }}"
 
-    - name: Restart Nginx
+    - name: R7 - Restart Nginx
       condition: event.url_check.status == "down"
       #throttle:
       #  once_after: 1 minutes
@@ -85,7 +86,7 @@
           name: nginx_restart
           organization: Default
 
-    - name: SSH login failure detected
+    - name: R8 - SSH login failure detected
       condition: event.event_type == "ssh_failed_login"
       action:
         run_job_template:
@@ -96,13 +97,7 @@
             extra_vars:   
               targetuser: "{{ event.user }}"          
 
-   # - name: Nginx up
-   #   condition: event.url_check.status != "down"
-   #   action:      
-   #     debug:
-   #       msg: "Nginx is up and runing..!"
-
-    - name: Capture all other events from this source
+    - name: R9 - Capture all other events from this source
       condition: event.alert is defined
       action:
         debug:
