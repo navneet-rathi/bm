@@ -104,4 +104,4 @@
     - name: R10 - debug
       condition: event.payload.host is defined
       action:
-        debug: "{{ event }}"
+        debug: "{{ event.payload }}"
