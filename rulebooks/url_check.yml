@@ -101,3 +101,8 @@
       condition: event.alert is defined
       action:
         debug:
+
+    - name: R10 - debug
+      condition: event is defined
+      action:
+        debug: "{{ event }}"
