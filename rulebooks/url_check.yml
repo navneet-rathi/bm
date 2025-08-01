@@ -105,4 +105,4 @@
     - name: R10 - debug
       condition: event is defined
       action:
-        debug: "{{ event }}"
+        debug:
