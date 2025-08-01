@@ -6,14 +6,18 @@
         urls:
           - http://192.168.64.40
         delay: 60
+
     - ansible.eda.alertmanager:
             host: 0.0.0.0
             port: 5050
             data_alerts_path: alerts
             data_host_path: labels.instance
             data_path_separator: .
-            skip_original_data: true 
-             
+            skip_original_data: true
+
+    - ansible.eda.webhook:
+        port: 5000             
+################                     
   rules:
     - name: SELinux is disabled
       condition: event.alert.labels.alertname == "selinux disabled" and event.alert.status == "firing"
@@ -80,6 +84,17 @@
         run_job_template:
           name: nginx_restart
           organization: Default
+
+    - name: SSH login failure detected
+      condition: event.event_type == "ssh_failed_login"
+      action:
+        run_job_template:
+          name: 01_change_password
+          organization: Default
+          job_args:
+            limit: "{{ event.host }}"
+            extra_vars:   
+              targetuser: "{{ event.user }}"          
 
    # - name: Nginx up
    #   condition: event.url_check.status != "down"
