@@ -86,15 +86,15 @@
           organization: Default
 
     - name: R8 - SSH login failure detected
-      condition: event.event_type == "ssh_failed_login"
+      condition: event.payload.event_type == "ssh_failed_login"
       action:
         run_job_template:
           name: 01_change_password
           organization: Default
           job_args:
-            limit: "{{ event.host }}"
+            limit: "{{ event.payload.host }}"
             extra_vars:   
-              targetuser: "{{ event.user }}"          
+              targetuser: "{{ event.payload.user }}"          
 
     - name: R9 - Capture all other events from this source
       condition: event.alert is defined
